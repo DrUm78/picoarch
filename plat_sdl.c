@@ -1,5 +1,6 @@
 #include <SDL/SDL.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include "core.h"
 #include "libpicofe/fonts.h"
 #include "libpicofe/plat.h"
@@ -37,6 +38,18 @@ static unsigned msg_expire = 0;
 
 static bool frame_dirty = false;
 static int frame_time = 1000000 / 60;
+
+static uint64_t plat_get_ticks_us_u64(void) {
+	uint64_t ret;
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	ret = (uint64_t)tv.tv_sec * 1000000;
+	ret += (uint64_t)tv.tv_usec;
+
+	return ret;
+}
 
 static void video_expire_msg(void)
 {
@@ -240,26 +253,39 @@ void plat_video_process(const void *data, unsigned width, unsigned height, size_
 
 void plat_video_flip(void)
 {
-	static unsigned int next_frame_time_us = 0;
+	static uint64_t next_frame_time_us = 0;
 
 	if (frame_dirty) {
-		unsigned int time = plat_get_ticks_us();
+		if (enable_drc) {
+			uint64_t time = plat_get_ticks_us_u64();
 
-		if (limit_frames && enable_drc && time < next_frame_time_us) {
-			usleep(next_frame_time_us - time);
+			if (limit_frames && time < next_frame_time_us) {
+				uint32_t delaytime = (next_frame_time_us - time - 1) / 1000 + 1;
+
+				if (delaytime < 1000)
+					SDL_Delay(delaytime);
+				else
+					next_frame_time_us = 0;
+
+				time = plat_get_ticks_us_u64();
+			}
+
+			if (!next_frame_time_us || !limit_frames) {
+				next_frame_time_us = time;
+			}
+
+			fb_flip();
+
+			do {
+				next_frame_time_us += frame_time;
+			} while (next_frame_time_us < time);
+		} else {
+			fb_flip();
+			next_frame_time_us = 0;
 		}
 
-		if (!next_frame_time_us)
-			next_frame_time_us = time;
-
-		fb_flip();
-
-		do {
-			next_frame_time_us += frame_time;
-		} while (next_frame_time_us < time);
+		frame_dirty = false;
 	}
-
-	frame_dirty = false;
 }
 
 void plat_video_close(void)
