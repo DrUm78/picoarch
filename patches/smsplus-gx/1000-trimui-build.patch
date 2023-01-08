@@ -1,11 +1,11 @@
 diff --git a/Makefile.libretro b/Makefile.libretro
-index e4575bc..7f96e07 100644
+index 5e52c65..db2761a 100644
 --- a/Makefile.libretro
 +++ b/Makefile.libretro
 @@ -327,7 +327,21 @@ else ifeq ($(platform), miyoo)
     SHARED := -shared -Wl,--no-undefined -Wl,--version-script=link.T
     CFLAGS += -ffast-math -march=armv5te -mtune=arm926ej-s -fomit-frame-pointer
-    ENDIANNESS_DEFINES += -DLSB_FIRST -DBYTE_ORDER=LITTLE_ENDIAN -DALIGN_LONG
+    ENDIANNESS_DEFINES += -DLSB_FIRST -DBYTE_ORDER=LITTLE_ENDIAN -DALIGN_DWORD
 -   
 +
 +else ifeq ($(platform), trimui)
@@ -20,7 +20,7 @@ index e4575bc..7f96e07 100644
 +	ifeq (,$(DEBUG))
 +		LDFLAGS += -s
 +	endif
-+	ENDIANNESS_DEFINES += -DLSB_FIRST -DBYTE_ORDER=LITTLE_ENDIAN -DALIGN_LONG
++	ENDIANNESS_DEFINES += -DLSB_FIRST -DBYTE_ORDER=LITTLE_ENDIAN -DALIGN_DWORD
 +
  # else ifneq (,$(findstring armv,$(platform)))
  #    TARGET := $(TARGET_NAME)_libretro.so
