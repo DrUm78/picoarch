@@ -37,7 +37,9 @@ Most have:
 
 ## Install
 
-Mount USB and copy picoarch.opk into Emulators directory.
+Mount USB and copy .opk files into Emulators directory. Each core has its own .opk.
+
+picoarch.opk is a standalone app with its own file browser that can be used to run any supported core, and can be used instead of individual core .opk files.
 
 ## Notes / extra features
 

@@ -29,39 +29,58 @@ endif
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
 beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
+beetle-pce-fast_TYPES = pce,cue,ccd,chd,toc,m3u
 
 bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
+bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
 
 fbalpha2012_BUILD_PATH = fbalpha2012/svn-current/trunk
 fbalpha2012_MAKEFILE = makefile.libretro
+fbalpha2012_TYPES = zip
 
 fceumm_REPO = https://github.com/libretro/libretro-fceumm
 fceumm_MAKEFILE = Makefile.libretro
+fceumm_TYPES = fds,nes,unf,unif
 
 fmsx_REPO = https://github.com/libretro/fmsx-libretro
+fmsx_TYPES = rom,mx1,mx2,dsk,cas
 
 gambatte_REPO = https://github.com/libretro/gambatte-libretro
+gambatte_TYPES = gb,gbc,dmg,zip
 
 gme_REPO = https://github.com/libretro/libretro-gme
 
+gpsp_TYPES = gba,bin,zip
+
 mame2000_REPO = https://github.com/libretro/mame2000-libretro
 mame2003_plus_REPO = https://github.com/libretro/mame2003-plus-libretro
+mame2000_TYPES = zip
+
+mame2003_plus_TYPES = zip
 
 pcsx_rearmed_MAKEFILE = Makefile.libretro
+pcsx_rearmed_TYPES = bin,cue,img,mdf,pbp,toc,cbn,m3u,chd
 
 picodrive_MAKEFILE = Makefile.libretro
+picodrive_TYPES = bin,gen,smd,md,32x,cue,iso,chd,sms,gg,m3u,68k,sgd
 
 quicknes_REPO = https://github.com/libretro/QuickNES_Core
+quicknes_TYPES = nes
 
 smsplus-gx_MAKEFILE = Makefile.libretro
 smsplus-gx_CORE = smsplus_libretro.so
+smsplus_TYPES = sms,bin,rom,col,gg,sg
+
+snes9x2002_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 snes9x2005_REPO = https://git.crowdedwood.com/snes9x2005
 snes9x2005_REVISION = performance
+snes9x2005_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 snes9x2005_plus_REPO = https://git.crowdedwood.com/snes9x2005
 snes9x2005_plus_REVISION = performance
 snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
+snes9x2005_plus_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 ifeq ($(platform), trimui)
 	OBJS += plat_trimui.o
@@ -173,34 +192,27 @@ ifeq ($(platform), trimui)
 
 beetle-pce-fast_NAME = pce_fast
 beetle-pce-fast_ROM_DIR = PCE
-beetle-pce-fast_TYPES = pce,cue,ccd,chd,toc,m3u
 beetle-pce-fast_PAK_NAME = TurboGrafx-16
 
 bluemsx_NAME = blueMSX
 bluemsx_ROM_DIR = MSX
-bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
 bluemsx_PAK_NAME = MSX (blueMSX)
 
 fbalpha2012_NAME = fba2012
 fbalpha2012_ROM_DIR = ARCADE
-fbalpha2012_TYPES = zip
 fbalpha2012_PAK_NAME = Arcade (FBA)
 
 fceumm_ROM_DIR = FC
-fceumm_TYPES = fds,nes,unf,unif
 fceumm_PAK_NAME = Nintendo (fceumm)
 
 fmsx_NAME = fMSX
 fmsx_ROM_DIR = MSX
-fmsx_TYPES = rom,mx1,mx2,dsk,cas
 fmsx_PAK_NAME = MSX
 
 gambatte_ROM_DIR = GB
-gambatte_TYPES = gb,gbc,dmg,zip
 gambatte_PAK_NAME = Game Boy
 
 gpsp_ROM_DIR = GBA
-gpsp_TYPES = gba,bin,zip
 gpsp_PAK_NAME = Game Boy Advance
 define gpsp_PAK_EXTRA
 
@@ -209,24 +221,19 @@ needs-swap
 endef
 
 gme_ROM_DIR = MUSIC
-gme_TYPES = ay,gbs,gym,hes,kss,nsf,nsfe,sap,spc,vgm,vgz,zip
 gme_PAK_NAME = Game Music
 
 mame2000_ROM_DIR = ARCADE
-mame2000_TYPES = zip
 mame2000_PAK_NAME = Arcade
 
 mame2003_plus_NAME = mame2003+
 mame2003_plus_ROM_DIR = ARCADE
-mame2003_plus_TYPES = zip
 mame2003_plus_PAK_NAME = Arcade (MAME 2003-plus)
 
 picodrive_ROM_DIR = MD
-picodrive_TYPES = bin,gen,smd,md,32x,cue,iso,chd,sms,gg,m3u,68k,sgd
 picodrive_PAK_NAME = Genesis
 
 pcsx_rearmed_ROM_DIR = PS
-pcsx_rearmed_TYPES = bin,cue,img,mdf,pbp,toc,cbn,m3u,chd
 pcsx_rearmed_PAK_NAME = PlayStation
 define pcsx_rearmed_PAK_EXTRA
 
@@ -235,19 +242,15 @@ needs-swap
 endef
 
 quicknes_ROM_DIR = FC
-quicknes_TYPES = nes
 quicknes_PAK_NAME = Nintendo
 
 smsplus_ROM_DIR = MS
-smsplus_TYPES = sms,bin,rom,col,gg,sg
 smsplus_PAK_NAME = Game Gear
 
 snes9x2002_ROM_DIR = SFC
-snes9x2002_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 snes9x2002_PAK_NAME = Super Nintendo
 
 snes9x2005_ROM_DIR = SFC
-snes9x2005_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 snes9x2005_PAK_NAME = Super Nintendo (2005)
 
 # -- gmenunx
@@ -357,6 +360,79 @@ endif # platform=trimui
 
 ifeq ($(platform), funkey-s)
 
+beetle-pce-fast_NAME = pce_fast
+beetle-pce-fast_ROM_DIR = /mnt/PCE-TurboGrafx
+
+bluemsx_NAME = blueMSX
+bluemsx_ROM_DIR = /mnt/MSX
+
+fbalpha2012_NAME = fba2012
+fbalpha2012_ROM_DIR = /mnt/Arcade
+
+fceumm_ROM_DIR = /mnt/NES
+
+fmsx_NAME = fMSX
+fmsx_ROM_DIR = /mnt/MSX
+
+gambatte_ROM_DIR = /mnt/Game Boy
+
+gme_ROM_DIR = /mnt/Music
+gme_TYPES = ay,gbs,gym,hes,kss,nsf,nsfe,sap,spc,vgm,vgz,zip
+
+gpsp_ROM_DIR = /mnt/Game Boy Advance
+
+mame2000_ROM_DIR = /mnt/Arcade
+
+mame2003_plus_NAME = mame2003+
+mame2003_plus_ROM_DIR = /mnt/Arcade
+
+pcsx_rearmed_ROM_DIR = /mnt/PS1
+
+picodrive_ROM_DIR = /mnt/Sega Genesis
+
+quicknes_ROM_DIR = /mnt/NES
+
+smsplus_ROM_DIR = /mnt/Game Gear
+
+snes9x2002_ROM_DIR = /mnt/SNES
+
+snes9x2005_ROM_DIR = /mnt/SNES
+
+snes9x2005_plus_NAME = snes9x2005+
+snes9x2005_plus_ROM_DIR = /mnt/SNES
+
+define CORE_opk =
+
+$1_NAME ?= $1
+
+define $1_DESKTOP
+[Desktop Entry]
+Name=$$($1_NAME)
+Comment=
+Exec=picoarch ./$1_libretro.so %f
+Icon=$$($1_ICON)
+SelectorBrowser=true
+SelectorDir=$($1_ROM_DIR)
+SelectorFilter=$($1_TYPES)
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=emulators;
+endef
+
+picoarch-$(1).opk: $(BIN) $(1)_libretro.so
+	mkdir -p .opkdata
+	cp $1_libretro.so .opkdata
+	$$(file >$$($(1)_NAME).funkey-s.desktop,$$($(1)_DESKTOP))
+	mv $$($(1)_NAME).funkey-s.desktop .opkdata
+	cp $(BIN) $(1)_libretro.so .opkdata
+	cd .opkdata && mksquashfs * ../picoarch-$(1).opk -all-root -no-xattrs -noappend -no-exports
+	rm -r .opkdata
+
+endef
+
+$(foreach core, $(CORES),$(eval $(call CORE_opk,$(core))))
+
 define picoarch_DESKTOP
 [Desktop Entry]
 Name=picoarch
@@ -370,15 +446,15 @@ Categories=emulators;
 endef
 
 picoarch.opk: $(BIN) cores
-	mkdir -p ".opkdata"
-	$(file >default.funkey-s.desktop,$(picoarch_DESKTOP))
-	mv default.funkey-s.desktop ".opkdata"
-	cp $(BIN) $(SOFILES) ".opkdata"
+	mkdir -p .opkdata
+	$(file >picoarch.funkey-s.desktop,$(picoarch_DESKTOP))
+	mv picoarch.funkey-s.desktop .opkdata
+	cp $(BIN) $(SOFILES) .opkdata
 	cd .opkdata && mksquashfs * ../picoarch.opk -all-root -no-xattrs -noappend -no-exports
 	rm -r .opkdata
 
-picoarch-funkey-s.zip: picoarch.opk
+picoarch-funkey-s.zip: picoarch.opk $(foreach core, $(CORES), picoarch-$(core).opk)
 	rm -f picoarch-funkey-s.zip
-	zip picoarch-funkey-s.zip README.funkey-s.md picoarch.opk
+	zip picoarch-funkey-s.zip README.funkey-s.md *.opk
 
 endif # platform=funkey-s
