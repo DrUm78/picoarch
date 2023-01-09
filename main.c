@@ -350,6 +350,12 @@ void load_config_keys(void)
 			if (defbinds[IN_BIND_OFFS(i, IN_BINDTYPE_EMU)] == 1 << EACTION_MENU) {
 				in_bind_key(0, i, 1 << EACTION_MENU, IN_BINDTYPE_EMU, 0);
 			}
+#ifdef FUNKEY_S
+			/* Force fn+down to be bound to standard change scaler action */
+			if (defbinds[IN_BIND_OFFS(i, IN_BINDTYPE_EMU)] == 1 << EACTION_NEXT_SCALER) {
+				in_bind_key(0, i, 1 << EACTION_NEXT_SCALER, IN_BINDTYPE_EMU, 0);
+			}
+#endif
 		}
 	}
 }

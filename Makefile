@@ -53,9 +53,9 @@ gme_REPO = https://github.com/libretro/libretro-gme
 gpsp_TYPES = gba,bin,zip
 
 mame2000_REPO = https://github.com/libretro/mame2000-libretro
-mame2003_plus_REPO = https://github.com/libretro/mame2003-plus-libretro
 mame2000_TYPES = zip
 
+mame2003_plus_REPO = https://github.com/libretro/mame2003-plus-libretro
 mame2003_plus_TYPES = zip
 
 pcsx_rearmed_MAKEFILE = Makefile.libretro
@@ -69,7 +69,7 @@ quicknes_TYPES = nes
 
 smsplus-gx_MAKEFILE = Makefile.libretro
 smsplus-gx_CORE = smsplus_libretro.so
-smsplus_TYPES = sms,bin,rom,col,gg,sg
+smsplus-gx_TYPES = sms,bin,rom,col,gg,sg
 
 snes9x2002_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
@@ -244,8 +244,8 @@ endef
 quicknes_ROM_DIR = FC
 quicknes_PAK_NAME = Nintendo
 
-smsplus_ROM_DIR = MS
-smsplus_PAK_NAME = Game Gear
+smsplus-gx_ROM_DIR = MS
+smsplus-gx_PAK_NAME = Game Gear
 
 snes9x2002_ROM_DIR = SFC
 snes9x2002_PAK_NAME = Super Nintendo
@@ -362,43 +362,77 @@ ifeq ($(platform), funkey-s)
 
 beetle-pce-fast_NAME = pce_fast
 beetle-pce-fast_ROM_DIR = /mnt/PCE-TurboGrafx
+beetle-pce-fast_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/mednafen/opk/pce/pce.png
+beetle-pce-fast_ICON = pce
 
 bluemsx_NAME = blueMSX
 bluemsx_ROM_DIR = /mnt/MSX
+bluemsx_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/dingux-msx.png
+bluemsx_ICON = dingux-msx
 
 fbalpha2012_NAME = fba2012
 fbalpha2012_ROM_DIR = /mnt/Arcade
+fbalpha2012_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/fba.png
+fbalpha2012_ICON = fba
 
 fceumm_ROM_DIR = /mnt/NES
+fceumm_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/FCEUX/opk/nes/nes.png
+fceumm_ICON = nes
 
 fmsx_NAME = fMSX
 fmsx_ROM_DIR = /mnt/MSX
+fmsx_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/dingux-msx.png
+fmsx_ICON = dingux-msx
 
 gambatte_ROM_DIR = /mnt/Game Boy
+gambatte_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/gnuboy/opk/gb/gb.png
+gambatte_ICON = gb
 
 gme_ROM_DIR = /mnt/Music
 gme_TYPES = ay,gbs,gym,hes,kss,nsf,nsfe,sap,spc,vgm,vgz,zip
+gme_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/gmenu2x/FunKey/data/skins/240x240/Default/icons/gmu.png
+gme_ICON = gmu
 
 gpsp_ROM_DIR = /mnt/Game Boy Advance
+gpsp_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/gpsp/opk/gba/gba.png
+gpsp_ICON = gba
 
 mame2000_ROM_DIR = /mnt/Arcade
+mame2000_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/mame.png
+mame2000_ICON = mame
 
 mame2003_plus_NAME = mame2003+
 mame2003_plus_ROM_DIR = /mnt/Arcade
+mame2003_plus_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/mame.png
+mame2003_plus_ICON = icon
 
 pcsx_rearmed_ROM_DIR = /mnt/PS1
+pcsx_rearmed_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PCSX-ReARMed/opk/ps1/ps1.png
+pcsx_rearmed_ICON = ps1
 
 picodrive_ROM_DIR = /mnt/Sega Genesis
+picodrive_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/picodrive/opk/megadrive/megadrive.png
+picodrive_ICON = megadrive
 
 quicknes_ROM_DIR = /mnt/NES
+quicknes_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/FCEUX/opk/nes/nes.png
+quicknes_ICON = nes
 
-smsplus_ROM_DIR = /mnt/Game Gear
+smsplus-gx_ROM_DIR = /mnt/Game Gear
+smsplus-gx_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/mednafen/opk/gamegear/gamegear.png
+smsplus-gx_ICON = gamegear
 
 snes9x2002_ROM_DIR = /mnt/SNES
+snes9x2002_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
+snes9x2002_ICON = snes
 
 snes9x2005_ROM_DIR = /mnt/SNES
+snes9x2005_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
+snes9x2005_ICON = snes
 
 snes9x2005_plus_NAME = snes9x2005+
+snes9x2005_plus_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
+snes9x2005_plus_ICON = snes
 snes9x2005_plus_ROM_DIR = /mnt/SNES
 
 define CORE_opk =
@@ -426,9 +460,9 @@ picoarch-$(1).opk: $(BIN) $(1)_libretro.so
 	$$(file >$$($(1)_NAME).funkey-s.desktop,$$($(1)_DESKTOP))
 	mv $$($(1)_NAME).funkey-s.desktop .opkdata
 	cp $(BIN) $(1)_libretro.so .opkdata
+	$(if $($(1)_ICON_URL),cd .opkdata && curl -L $($(1)_ICON_URL) -O,)
 	cd .opkdata && mksquashfs * ../picoarch-$(1).opk -all-root -no-xattrs -noappend -no-exports
 	rm -r .opkdata
-
 endef
 
 $(foreach core, $(CORES),$(eval $(call CORE_opk,$(core))))
@@ -438,7 +472,7 @@ define picoarch_DESKTOP
 Name=picoarch
 Comment=Small screen libretro frontend
 Exec=picoarch
-Icon=
+Icon=sdlretro_icon
 Terminal=false
 Type=Application
 StartupNotify=true
@@ -450,6 +484,7 @@ picoarch.opk: $(BIN) cores
 	$(file >picoarch.funkey-s.desktop,$(picoarch_DESKTOP))
 	mv picoarch.funkey-s.desktop .opkdata
 	cp $(BIN) $(SOFILES) .opkdata
+	cd .opkdata && curl -L -O https://raw.githubusercontent.com/FunKey-Project/sdlretro/master/data/sdlretro_icon.png
 	cd .opkdata && mksquashfs * ../picoarch.opk -all-root -no-xattrs -noappend -no-exports
 	rm -r .opkdata
 
