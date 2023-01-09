@@ -26,8 +26,10 @@ char save_template_path[MAX_PATH];
 #include "funkey/fk_menu.h"
 #include "funkey/fk_instant_play.h"
 static bool instant_play = false;
+bool should_suspend = false;
 #endif
 
+bool in_menu = false;
 bool should_quit = false;
 unsigned current_audio_buffer_size;
 char core_name[MAX_PATH];
@@ -211,6 +213,10 @@ void set_defaults(void)
 	scale_size = SCALE_SIZE_NONE;
 	scale_filter = SCALE_FILTER_NEAREST;
 
+#ifdef FUNKEY_S
+	enable_drc = 0;
+#endif
+
 	/* Sets better defaults for small screen */
 	if (SCREEN_WIDTH == 240) {
 		scale_size = SCALE_SIZE_CROP;
@@ -372,6 +378,7 @@ void handle_emu_action(emu_action action)
 	case EACTION_MENU:
 		toggle_fast_forward(1); /* Force FF off */
 		sram_write();
+		in_menu = true;
 #if defined(MMENU)
 		if (mmenu && content && content->path) {
 			ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
@@ -424,6 +431,7 @@ void handle_emu_action(emu_action action)
 #else
 		menu_loop();
 #endif
+		in_menu = false;
 		break;
 	case EACTION_TOGGLE_HUD:
 		show_hud = !show_hud;
@@ -592,7 +600,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc > 1 && argv[1]) {
-		if (!realpath(argv[1], &core_path)) {
+		if (!realpath(argv[1], core_path)) {
 			strncpy(core_path, argv[1], sizeof(core_path) - 1);
 		}
 	} else {
@@ -677,6 +685,11 @@ int main(int argc, char **argv) {
 		count_fps();
 		adjust_audio();
 		current_core.retro_run();
+#ifdef FUNKEY_S
+		if (should_suspend)
+			FK_Suspend();
+#endif
+
 		if (!should_quit)
 			plat_video_flip();
 	} while (!should_quit);

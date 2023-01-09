@@ -27,6 +27,11 @@ typedef enum {
   CONFIG_TYPE_AUTO,
 } config_type;
 
+#ifdef FUNKEY_S
+extern bool should_suspend;
+#endif
+
+extern bool in_menu;
 extern bool should_quit;
 extern unsigned current_audio_buffer_size;
 extern char core_name[MAX_PATH];

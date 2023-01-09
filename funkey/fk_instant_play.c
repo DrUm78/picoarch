@@ -64,12 +64,23 @@ static void handle_sigusr1(int signal)
     }
     pclose(fp);
 
+    if (in_menu) {
+        FK_Suspend();
+    } else {
+        /* Wait for the core to be ready to save */
+        should_suspend = true;
+    }
+}
+
+void FK_Suspend(void)
+{
     state_slot = AUTOSAVE_SLOT;
     if(!state_write()) {
         printf("Save failed");
         state_slot = 0;
     }
 
+    sram_write();
     save_config(CONFIG_TYPE_AUTO);
 
 	/* Perform Instant Play save and shutdown */
@@ -81,6 +92,7 @@ static void handle_sigusr1(int signal)
     /* Exit application */
     exit(0);
 }
+
 
 void FK_InitInstantPlay(int argc, char **argv)
 {

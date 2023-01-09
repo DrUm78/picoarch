@@ -41,6 +41,7 @@ extern "C" {
 #define AUTOSAVE_SLOT 99
 
 extern void FK_InitInstantPlay(int argc, char **argv);
+extern void FK_Suspend(void);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
