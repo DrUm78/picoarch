@@ -53,7 +53,7 @@ The libretro documentation specifies which bios is required for each core. For e
 
 Cheats use RetroArch .cht file format. Many cheat files are here <https://github.com/libretro/libretro-database/tree/master/cht>
 
-Cheat file name needs to match ROM name, and go underneath save directory. For example, `/Apps/.picoarch-gambatte/cheats/Super Mario Land (World).cht`. When a cheat file is detected, a "cheats" menu item will appear in advanced menu. Not all cheats work with all cores, may want to clean up files to just the cheats you want.
+Cheat file name needs to match ROM name, and go underneath save directory. For example, `/mnt/FunKey/.picoarch-gambatte/cheats/Super Mario Land (World).cht`. When a cheat file is detected, a "cheats" menu item will appear in advanced menu. Not all cheats work with all cores, may want to clean up files to just the cheats you want.
 
 ### IPS / BPS soft-patching
 

@@ -5,7 +5,7 @@
 #include "options.h"
 #include "libretro.h"
 
-#define MAX_PATH 512
+#define MAX_PATH PATH_MAX
 
 typedef enum {
   EACTION_NONE = 0,

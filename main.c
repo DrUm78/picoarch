@@ -592,7 +592,9 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc > 1 && argv[1]) {
-		strncpy(core_path, argv[1], sizeof(core_path) - 1);
+		if (!realpath(argv[1], &core_path)) {
+			strncpy(core_path, argv[1], sizeof(core_path) - 1);
+		}
 	} else {
 		if (menu_select_core())
 			quit(-1);
