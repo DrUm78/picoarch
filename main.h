@@ -15,8 +15,17 @@ typedef enum {
   EACTION_SAVE_STATE,
   EACTION_LOAD_STATE,
   EACTION_SCREENSHOT,
+#ifdef FUNKEY_S
+  EACTION_NEXT_SCALER,
+#endif
   EACTION_QUIT,
 } emu_action;
+
+typedef enum {
+  CONFIG_TYPE_CORE = 0,
+  CONFIG_TYPE_GAME,
+  CONFIG_TYPE_AUTO,
+} config_type;
 
 extern bool should_quit;
 extern unsigned current_audio_buffer_size;
@@ -42,10 +51,10 @@ extern char save_template_path[MAX_PATH];
 int screenshot(void);
 
 void set_defaults(void);
-int save_config(int is_game);
+int save_config(config_type config_type);
 void load_config(void);
 void load_config_keys(void);
-int remove_config(int is_game);
+int remove_config(config_type config_type);
 
 void handle_emu_action(emu_action action);
 void pa_log(enum retro_log_level level, const char *fmt, ...);

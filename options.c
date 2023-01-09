@@ -5,6 +5,7 @@
 #include "options.h"
 #include "overrides.h"
 #include "util.h"
+#include "scale.h"
 
 int show_fps;
 int show_cpu;
@@ -19,8 +20,8 @@ enum scale_filter scale_filter;
 struct core_options core_options;
 
 #define MAX_DESC_LEN 20
-#define MAX_LINE_LEN 52
-#define MAX_LINES 3
+#define MAX_LINE_LEN SCREEN_WIDTH / 6
+#define MAX_LINES 4
 
 static int options_default_index(const struct core_option_entry* entry, const char *default_value) {
 	const char *value;

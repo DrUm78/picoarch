@@ -11,7 +11,7 @@ static const struct core_override_option mame2000_core_option_overrides[] = {
 	{
 		.key = "mame2000-frameskip_threshold",
 		.info = "When 'Frameskip' is set to 'Threshold', sets how low the audio buffer can get before frames will be skipped.",
-		.retro_var_value = "FS Threshold (%); 30|40|50|60",
+		.retro_var_value = "FS Threshold (%%); 30|40|50|60",
 	},
 	{
 		.key = "mame2000-frameskip_interval",

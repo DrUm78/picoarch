@@ -42,9 +42,11 @@ static int core_load_game_info(struct content *content, struct retro_game_info *
 	return content_load_game_info(content, game_info, info.need_fullpath);
 }
 
-void config_file_name(char *buf, size_t len, int is_game)
+void config_file_name(char *buf, size_t len, config_type config_type)
 {
-	if (is_game && content) {
+	if (config_type == CONFIG_TYPE_AUTO) {
+		snprintf(buf, len, "%s%s", config_dir, "picoarch-auto.cfg");
+	} else if (config_type == CONFIG_TYPE_GAME && content) {
 		content_based_name(content, buf, len, save_dir, NULL, ".cfg");
 	} else {
 		snprintf(buf, len, "%s%s", config_dir, "picoarch.cfg");
@@ -115,10 +117,16 @@ bool state_allowed(void) {
 }
 
 void state_file_name(char *name, size_t size, int slot) {
-	char extension[5] = {0};
+	char extension[6] = {0};
 
-	snprintf(extension, 5, ".st%d", slot);
+	snprintf(extension, 6, ".st%d", slot);
 	content_based_name(content, name, MAX_PATH, save_dir, NULL, extension);
+}
+
+bool state_exists(int slot) {
+	char fname[MAX_PATH];
+	state_file_name(fname, sizeof(fname), slot);
+	return access(fname, F_OK) == 0;
 }
 
 int state_read(void) {
@@ -287,6 +295,15 @@ static void set_directories(const char *core_name) {
 #ifdef MINUI
 	strncpy(system_dir, save_dir, MAX_PATH-1);
 #else
+
+#ifdef FUNKEY_S
+	if (home != NULL) {
+		snprintf(system_dir, MAX_PATH, "%s/.picoarch", home);
+		mkdir(system_dir, 0755);
+		snprintf(system_dir, MAX_PATH, "%s/.picoarch/system", home);
+		mkdir(system_dir, 0755);
+	} else
+#endif
 	if (getcwd(cwd, MAX_PATH)) {
 		snprintf(system_dir, MAX_PATH, "%s/system", cwd);
 		mkdir(system_dir, 0755);

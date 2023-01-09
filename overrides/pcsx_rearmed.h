@@ -12,7 +12,7 @@ static const struct core_override_option pcsx_rearmed_core_option_overrides[] = 
 	},
 	{
 		.key = "pcsx_rearmed_frameskip_threshold",
-		.desc = "FS Threshold (%)",
+		.desc = "FS Threshold (%%)",
 		.info = "When 'Frameskip' is set to 'Threshold', sets how low the audio buffer can get before frames will be skipped.",
 	},
 	{

@@ -8,8 +8,6 @@ struct audio_frame {
 	int16_t right;
 };
 
-#define HUD_LEN 41
-
 int  plat_init(void);
 int  plat_reinit(void);
 void plat_finish(void);

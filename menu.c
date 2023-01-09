@@ -74,17 +74,7 @@ me_bind_action emuctrl_actions[] =
 
 static int emu_check_save_file(int slot, int *time)
 {
-	char fname[MAX_PATH];
-	struct stat status;
-	int ret;
-
-	state_file_name(fname, sizeof(fname), slot);
-
-	ret = stat(fname, &status);
-	if (ret != 0)
-		return 0;
-
-	return 1;
+	return state_exists(slot);
 }
 
 static int emu_save_load_game(int load, int unused)
@@ -123,7 +113,7 @@ static int mh_restore_defaults(int id, int keys)
 
 static int mh_savecfg(int id, int keys)
 {
-	if (save_config(id == MA_OPT_SAVECFG_GAME ? 1 : 0) == 0)
+	if (save_config(id == MA_OPT_SAVECFG_GAME ? CONFIG_TYPE_GAME : CONFIG_TYPE_CORE) == 0)
 		menu_update_msg("config saved");
 	else
 		menu_update_msg("failed to write config");
@@ -484,6 +474,8 @@ static const char h_restore_def[]     = "Switches back to default settings";
 
 static const char h_show_fps[]        = "Shows frames and vsyncs per second";
 static const char h_show_cpu[]        = "Shows CPU usage";
+
+#if (SCREEN_WIDTH >= 320)
 static const char h_enable_drc[]      = "Dynamically adjusts audio rate for smoother video";
 
 static const char h_audio_buffer_size[]        =
@@ -500,15 +492,36 @@ static const char h_scale_filter[]        =
 	"When stretching, how missing pixels are filled.\n"
 	"Nearest copies the last pixel. Sharp keeps pixels\n"
 	"aligned where possible. Smooth adds a blur effect.";
+#else
+static const char h_enable_drc[]      =
+	"Dynamically adjusts audio rate for\n"
+	"smoother video.";
 
+static const char h_audio_buffer_size[]        =
+	"The audio buffer size, in frames.\n"
+  "Higher values reduce the risk of audio\n"
+	"crackling at the cost of delayed sound.";
 
-static const char *men_scale_size[] = { "Native", "Aspect", "Full", NULL};
+static const char h_scale_size[]        =
+	"How much to stretch the screen when\n"
+	"scaling. Native does no stretching.\n"
+	"Aspect uses the correct aspect ratio.\n"
+	"Full uses the whole screen.";
+
+static const char h_scale_filter[]        =
+	"When stretching, how missing pixels\n"
+	"are filled. Nearest copies the last\n"
+	"pixel. Sharp tries to keep pixels\n"
+	"aligned. Smooth adds a blur effect.";
+#endif
+
+static const char *men_scale_size[] = { "Native", "Aspect", "Full", "Crop", NULL};
 static const char *men_scale_filter[] = { "Nearest", "Sharp", "Smooth", NULL};
 
 static menu_entry e_menu_video_options[] =
 {
 	mee_onoff_h      ("Show FPS",                 0, show_fps, 1, h_show_fps),
-	mee_onoff_h      ("Show CPU %",               0, show_cpu, 1, h_show_cpu),
+	mee_onoff_h      ("Show CPU %%",              0, show_cpu, 1, h_show_cpu),
 	mee_enum_h       ("Screen size",              0, scale_size, men_scale_size, h_scale_size),
 	mee_enum_h       ("Filter",                   0, scale_filter, men_scale_filter, h_scale_filter),
 	mee_range_h      ("Audio buffer",             0, audio_buffer_size, 1, 15, h_audio_buffer_size),

@@ -22,6 +22,12 @@ void* mmenu = NULL;
 char save_template_path[MAX_PATH];
 #endif
 
+#ifdef FUNKEY_S
+#include "funkey/fk_menu.h"
+#include "funkey/fk_instant_play.h"
+static bool instant_play = false;
+#endif
+
 bool should_quit = false;
 unsigned current_audio_buffer_size;
 char core_name[MAX_PATH];
@@ -204,6 +210,24 @@ void set_defaults(void)
 	audio_buffer_size = 5;
 	scale_size = SCALE_SIZE_NONE;
 	scale_filter = SCALE_FILTER_NEAREST;
+
+	/* Sets better defaults for small screen */
+	if (SCREEN_WIDTH == 240) {
+		scale_size = SCALE_SIZE_CROP;
+		scale_filter = SCALE_FILTER_SMOOTH;
+
+		if (!strcmp(core_name, "gambatte")) {
+			scale_size = SCALE_SIZE_ASPECT;
+			scale_filter = SCALE_FILTER_SHARP;
+		}
+
+		if (!strcmp(core_name, "pcsx_rearmed") ||
+		    !strcmp(core_name, "picodrive")) {
+			scale_size = SCALE_SIZE_FULL;
+			scale_filter = SCALE_FILTER_SMOOTH;
+		}
+	}
+
 	scale_update_scaler();
 
 	if (current_audio_buffer_size < audio_buffer_size)
@@ -218,12 +242,12 @@ void set_defaults(void)
 	options_update_changed();
 }
 
-int save_config(int is_game)
+int save_config(config_type config_type)
 {
 	char config_filename[MAX_PATH];
 	FILE *config_file;
 
-	config_file_name(config_filename, MAX_PATH, is_game);
+	config_file_name(config_filename, MAX_PATH, config_type);
 	config_file = fopen(config_filename, "wb");
 	if (!config_file) {
 		fprintf(stderr, "Could not write config to %s\n", config_filename);
@@ -235,7 +259,7 @@ int save_config(int is_game)
 
 	fclose(config_file);
 
-	if (is_game)
+	if (config_type == CONFIG_TYPE_GAME)
 		config_override = 1;
 
 	return 0;
@@ -245,15 +269,25 @@ static void alloc_config_buffer(char **config_ptr) {
 	char config_filename[MAX_PATH];
 	FILE *config_file;
 	size_t length;
+	int config_auto = 0;
 	config_override = 0;
 
-	config_file_name(config_filename, MAX_PATH, 1);
+	config_file_name(config_filename, MAX_PATH, CONFIG_TYPE_AUTO);
 	config_file = fopen(config_filename, "rb");
 	if (config_file) {
-		config_override = 1;
+		config_auto = 1;
+#ifdef FUNKEY_S
+		instant_play = true;
+#endif
 	} else {
-		config_file_name(config_filename, MAX_PATH, 0);
+		config_file_name(config_filename, MAX_PATH, CONFIG_TYPE_GAME);
 		config_file = fopen(config_filename, "rb");
+		if (config_file) {
+			config_override = 1;
+		} else {
+			config_file_name(config_filename, MAX_PATH, CONFIG_TYPE_CORE);
+			config_file = fopen(config_filename, "rb");
+		}
 	}
 
 	if (!config_file)
@@ -269,6 +303,13 @@ static void alloc_config_buffer(char **config_ptr) {
 
 	fread(*config_ptr, 1, length, config_file);
 	fclose(config_file);
+
+	if (config_auto) {
+		config_file_name(config_filename, MAX_PATH, CONFIG_TYPE_GAME);
+		if (access(config_filename, F_OK) == 0) {
+			config_override = 1;
+		}
+	}
 }
 
 void load_config(void)
@@ -307,13 +348,13 @@ void load_config_keys(void)
 	}
 }
 
-int remove_config(int is_game) {
+int remove_config(config_type config_type) {
 	char config_filename[MAX_PATH];
 	int ret;
 
-	config_file_name(config_filename, MAX_PATH, is_game);
+	config_file_name(config_filename, MAX_PATH, config_type);
 	ret = remove(config_filename);
-	if (ret == 0)
+	if (ret == 0 && config_type == CONFIG_TYPE_GAME)
 		config_override = 0;
 
 	return ret;
@@ -331,7 +372,7 @@ void handle_emu_action(emu_action action)
 	case EACTION_MENU:
 		toggle_fast_forward(1); /* Force FF off */
 		sram_write();
-#ifdef MMENU
+#if defined(MMENU)
 		if (mmenu && content && content->path) {
 			ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
 			SDL_Surface *screen = SDL_GetVideoSurface();
@@ -361,10 +402,27 @@ void handle_emu_action(emu_action action)
 			SDL_PushEvent(&sdlevent);
 		}
 		else {
-#endif
 			menu_loop();
-#ifdef MMENU
 		}
+#elif defined(FUNKEY_S)
+		{
+			SDL_Surface *screen = SDL_GetVideoSurface();
+			int return_code = FK_RunMenu(screen);
+
+			if (return_code == MENU_RETURN_MENU) {
+				menu_loop();
+			} else if (return_code == MENU_RETURN_EXIT) {
+				should_quit = 1;
+			}
+
+			// release that menu key
+			SDL_Event sdlevent;
+			sdlevent.type = SDL_KEYUP;
+			sdlevent.key.keysym.sym = SDLK_q;
+			SDL_PushEvent(&sdlevent);
+		}
+#else
+		menu_loop();
 #endif
 		break;
 	case EACTION_TOGGLE_HUD:
@@ -384,6 +442,11 @@ void handle_emu_action(emu_action action)
 	case EACTION_SCREENSHOT:
 		screenshot();
 		break;
+#ifdef FUNKEY_S
+	case EACTION_NEXT_SCALER:
+		FK_NextAspectRatio();
+		break;
+#endif
 	case EACTION_QUIT:
 		should_quit = 1;
 		break;
@@ -508,6 +571,10 @@ static void adjust_audio(void) {
 
 int main(int argc, char **argv) {
 	char content_path[MAX_PATH];
+#ifdef FUNKEY_S
+	char autosave_path[MAX_PATH];
+#endif
+
 
 	if (argc > 1) {
 		if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
@@ -568,8 +635,41 @@ int main(int argc, char **argv) {
 		if (ResumeSlot) resume_slot = ResumeSlot();
 	}
 #endif
+#ifdef FUNKEY_S
+	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP) == 0) {
+		PA_ERROR("Error initializing SDL_Image\n");
+		quit(-1);
+	}
+
+	if (TTF_Init() == -1) {
+		PA_ERROR("Error initializing SDL_ttf\n");
+		quit(-1);
+	}
+	FK_InitMenu();
+
+	state_file_name(autosave_path, MAX_PATH, AUTOSAVE_SLOT);
+	if (access(autosave_path, F_OK) == 0) {
+		if (instant_play) {
+			resume_slot = AUTOSAVE_SLOT;
+		} else {
+			SDL_Surface *screen = SDL_GetVideoSurface();
+			int resume = FK_RunResumeMenu(screen);
+			if (resume == RESUME_YES) {
+				resume_slot = AUTOSAVE_SLOT;
+			}
+		}
+
+		instant_play = false;
+	}
+#endif
 	show_startup_message();
 	state_resume();
+
+#ifdef FUNKEY_S
+	remove(autosave_path);
+	remove_config(CONFIG_TYPE_AUTO);
+	FK_InitInstantPlay(argc, argv);
+#endif
 
 	do {
 		count_fps();
@@ -584,6 +684,18 @@ int main(int argc, char **argv) {
 
 int quit(int code) {
 	menu_finish();
+
+#ifdef FUNKEY_S
+	if (current_core.initialized && state_allowed()) {
+		state_slot = AUTOSAVE_SLOT;
+		state_write();
+	}
+
+	FK_EndMenu();
+	TTF_Quit();
+	IMG_Quit();
+#endif
+
 	core_unload();
 	plat_finish();
 	exit(code);

@@ -6,9 +6,14 @@
 #include "main.h"
 #include "util.h"
 
+#define MAX_LINE_LEN SCREEN_WIDTH / 6
+
+#if SCREEN_WIDTH == 240
+#define MAX_DESC_LEN 22
+#else
 #define MAX_DESC_LEN 27
-#define MAX_LINE_LEN 52
-#define MAX_LINES 3
+#endif
+#define MAX_LINES 4
 
 static size_t parse_count(FILE *file) {
 	size_t count = 0;

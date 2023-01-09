@@ -104,6 +104,29 @@ static void scale_1x(unsigned w, unsigned h, size_t pitch, const void *src, void
 	}
 }
 
+static void scale_crop(unsigned w, unsigned h, size_t pitch, const void *src, void *dst) {
+	int dst_y = ((SCREEN_HEIGHT - (short)h) / 2);
+	int dst_x = ((SCREEN_WIDTH - (short)w) * SCREEN_BPP / 2);
+
+	if (dst_y < 0) {
+		src += -dst_y * pitch;
+		dst_y = 0;
+		h = SCREEN_HEIGHT;
+	}
+
+	if (dst_x < 0) {
+		src += -dst_x;
+		dst_x = 0;
+		w = SCREEN_WIDTH;
+	}
+
+	dst += dst_y * SCREEN_PITCH + dst_x;
+
+	for (unsigned y = 0; y < h; y++) {
+		memcpy(dst + y * SCREEN_PITCH, src + y * pitch, w * SCREEN_BPP);
+	}
+}
+
 static void scale_nearest(unsigned w, unsigned h, size_t pitch, const void *src, void *dst) {
 	int dy = -dst_h;
 	unsigned lines = h;
@@ -416,7 +439,10 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.blend_line = NULL;
 	}
 
-	if (scale_size == SCALE_SIZE_FULL) {
+	if (scale_size == SCALE_SIZE_CROP) {
+		scaler = scale_crop;
+		return;
+	} if (scale_size == SCALE_SIZE_FULL) {
 		dst_w = SCREEN_WIDTH;
 		dst_h = SCREEN_HEIGHT;
 		dst_offs = 0;
@@ -447,8 +473,8 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 
 	if (!scaler && w == 160 && h == 144) {
 		if (scale_size == SCALE_SIZE_ASPECT && scale_filter == SCALE_FILTER_SHARP) {
-			unsigned dst_x = ((320 - 240) * SCREEN_BPP / 2);
-			unsigned dst_y = ((240 - 216) / 2);
+			unsigned dst_x = ((SCREEN_WIDTH - 240) * SCREEN_BPP / 2);
+			unsigned dst_y = ((SCREEN_HEIGHT - 216) / 2);
 			dst_offs = dst_y * SCREEN_PITCH + dst_x;
 
 			scaler = scale_sharp_160x144_240x216;
@@ -456,18 +482,16 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		}
 	}
 
-	if (!scaler && w == 240 && h == 160) {
-		if (scale_filter == SCALE_FILTER_SHARP) {
+	if (SCREEN_WIDTH == 320 && scale_filter == SCALE_FILTER_SHARP) {
+		if (!scaler && w == 240 && h == 160) {
 			scaler = scale_sharp_240x160_320xXXX;
 			return;
 		}
-	}
 
-	if (!scaler &&
-	    w == 256 &&
-	    (current_aspect_ratio == 4.0f / 3.0f || scale_size == SCALE_SIZE_FULL))
-	{
-		if (scale_filter == SCALE_FILTER_SHARP) {
+		if (!scaler &&
+		    w == 256 &&
+		    (current_aspect_ratio == 4.0f / 3.0f || scale_size == SCALE_SIZE_FULL))
+		{
 			scaler = scale_sharp_256xXXX_320xXXX;
 			return;
 		}

@@ -1,5 +1,6 @@
 # Global definitions
 platform   ?= unix
+core_platform ?= $(platform)
 
 CC        = $(CROSS_COMPILE)gcc
 SYSROOT   = $(shell $(CC) --print-sysroot)
@@ -19,7 +20,12 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 # Unpolished or slow cores that build
 # EXTRA_CORES += fbalpha2012
 # EXTRA_CORES += mame2003_plus
-CORES     = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
+
+CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
+
+ifeq ($(platform), funkey-s)
+CORES := $(CORES) snes9x2005_plus
+endif
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
 beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
@@ -53,11 +59,20 @@ smsplus-gx_CORE = smsplus_libretro.so
 snes9x2005_REPO = https://git.crowdedwood.com/snes9x2005
 snes9x2005_REVISION = performance
 
+snes9x2005_plus_REPO = https://git.crowdedwood.com/snes9x2005
+snes9x2005_plus_REVISION = performance
+snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
+
 ifeq ($(platform), trimui)
 	OBJS += plat_trimui.o
 	CFLAGS += -mcpu=arm926ej-s -mtune=arm926ej-s -fno-PIC -DCONTENT_DIR='"/mnt/SDCARD/Roms"'
 	LDFLAGS += -fno-PIC
-
+else ifeq ($(platform), funkey-s)
+	OBJS += plat_funkey.o funkey/fk_menu.o funkey/fk_instant_play.o
+	CFLAGS += -DCONTENT_DIR='"/mnt"' -DFUNKEY_S
+  LDFLAGS += -fPIC
+	LDFLAGS += -lSDL_image -lSDL_ttf # For fk_menu
+  core_platform = classic_armv7_a7
 else ifeq ($(platform), unix)
 	OBJS += plat_linux.o
 	LDFLAGS += -fPIE
@@ -105,12 +120,13 @@ print-%:
 all: $(BIN) cores
 
 libpicofe/.patched:
-	cd libpicofe && git apply -p1 < ../patches/libpicofe/0001-key-combos.patch && touch .patched
+	cd libpicofe && git apply -p1 < ../patches/libpicofe/0001-key-combos.patch && git apply -p1 < ../patches/libpicofe/0002-small-screen.patch && touch .patched
 
 clean-libpicofe:
-	test ! -f libpicofe/.patched || (cd libpicofe && git apply -p1 -R < ../patches/libpicofe/0001-key-combos.patch && rm .patched)
+	test ! -f libpicofe/.patched || (cd libpicofe && git apply -p1 -R < ../patches/libpicofe/0002-small-screen.patch && git apply -p1 -R < ../patches/libpicofe/0001-key-combos.patch && rm .patched)
 
 plat_trimui.o: plat_sdl.c
+plat_funkey.o: plat_sdl.c
 plat_linux.o: plat_sdl.c
 
 $(BIN): libpicofe/.patched $(OBJS)
@@ -122,7 +138,7 @@ $1_REPO ?= https://github.com/libretro/$(1)/
 
 $1_BUILD_PATH ?= $(1)
 
-$1_MAKE = make $(and $($1_MAKEFILE),-f $($1_MAKEFILE)) platform=$(platform) $(and $(DEBUG),DEBUG=$(DEBUG)) $(and $(PROFILE),PROFILE=$(PROFILE)) $($(1)_FLAGS)
+$1_MAKE = make $(and $($1_MAKEFILE),-f $($1_MAKEFILE)) platform=$(core_platform) $(and $(DEBUG),DEBUG=$(DEBUG)) $(and $(PROFILE),PROFILE=$(PROFILE)) $($(1)_FLAGS)
 
 $(1):
 	git clone $(if $($1_REVISION),,--depth 1) --recursive $$($(1)_REPO) $(1)
@@ -338,3 +354,31 @@ picoarch.zip:
 	cd pkg && zip -r ../picoarch.zip *
 
 endif # platform=trimui
+
+ifeq ($(platform), funkey-s)
+
+define picoarch_DESKTOP
+[Desktop Entry]
+Name=picoarch
+Comment=Small screen libretro frontend
+Exec=picoarch
+Icon=
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=emulators;
+endef
+
+picoarch.opk: $(BIN) cores
+	mkdir -p ".opkdata"
+	$(file >default.funkey-s.desktop,$(picoarch_DESKTOP))
+	mv default.funkey-s.desktop ".opkdata"
+	cp $(BIN) $(SOFILES) ".opkdata"
+	cd .opkdata && mksquashfs * ../picoarch.opk -all-root -no-xattrs -noappend -no-exports
+	rm -r .opkdata
+
+picoarch-funkey-s.zip: picoarch.opk
+	rm -f picoarch-funkey-s.zip
+	zip picoarch-funkey-s.zip README.funkey-s.md picoarch.opk
+
+endif # platform=funkey-s

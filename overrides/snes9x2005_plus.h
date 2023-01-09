@@ -1,6 +1,6 @@
 #include "overrides.h"
 
-static const struct core_override_option snes9x2005_core_option_overrides[] = {
+static const struct core_override_option snes9x2005_plus_core_option_overrides[] = {
 	{
 		.key = "snes9x_2005_region",
 		.desc = "Region",
@@ -43,7 +43,7 @@ static const struct core_override_option snes9x2005_core_option_overrides[] = {
 	{ NULL }
 };
 
-me_bind_action snes9x2005_ctrl_actions[] =
+me_bind_action snes9x2005_plus_ctrl_actions[] =
 {
 	{ "UP       ",  1 << RETRO_DEVICE_ID_JOYPAD_UP},
 	{ "DOWN     ",  1 << RETRO_DEVICE_ID_JOYPAD_DOWN },
@@ -60,16 +60,16 @@ me_bind_action snes9x2005_ctrl_actions[] =
 	{ NULL,       0 }
 };
 
-const struct core_override_fast_forward snes9x2005_fast_forward = {
+const struct core_override_fast_forward snes9x2005_plus_fast_forward = {
 	.type_key = "snes9x_2005_frameskip",
 	.type_value = "auto",
 	.interval_key = "snes9x_2005_frameskip_interval"
 };
 
-#define snes9x2005_overrides {                              \
-	.core_name = "snes9x2005",                          \
-	.fast_forward = &snes9x2005_fast_forward,           \
-	.actions = snes9x2005_ctrl_actions,                 \
-	.action_size = array_size(snes9x2005_ctrl_actions), \
-	.options = snes9x2005_core_option_overrides         \
+#define snes9x2005_plus_overrides {                        \
+	.core_name = "snes9x2005_plus",                          \
+	.fast_forward = &snes9x2005_plus_fast_forward,           \
+	.actions = snes9x2005_plus_ctrl_actions,                 \
+	.action_size = array_size(snes9x2005_plus_ctrl_actions), \
+	.options = snes9x2005_plus_core_option_overrides         \
 }
