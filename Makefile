@@ -89,9 +89,9 @@ ifeq ($(platform), trimui)
 else ifeq ($(platform), funkey-s)
 	OBJS += plat_funkey.o funkey/fk_menu.o funkey/fk_instant_play.o
 	CFLAGS += -DCONTENT_DIR='"/mnt"' -DFUNKEY_S
-  LDFLAGS += -fPIC
+	LDFLAGS += -fPIC
 	LDFLAGS += -lSDL_image -lSDL_ttf # For fk_menu
-  core_platform = classic_armv7_a7
+	core_platform = classic_armv7_a7
 else ifeq ($(platform), unix)
 	OBJS += plat_linux.o
 	LDFLAGS += -fPIE

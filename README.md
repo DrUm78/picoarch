@@ -1,6 +1,6 @@
 # picoarch - a libretro frontend designed for small screens and low power
 
-picoarch uses libpicofe and SDL to create a small frontend to libretro cores. It's designed for small (320x240 2.0-2.4") screen, low-powered devices like the Trimui Model S (PowKiddy A66).
+picoarch uses libpicofe and SDL to create a small frontend to libretro cores. It's designed for small (320x240 2.0-2.4") screen, low-powered devices like the Trimui Model S (PowKiddy A66) and FunKey S.
 
 ## Running
 
@@ -14,7 +14,7 @@ If you do not specify core or content, picoarch will have you select a core from
 
 ## Building
 
-The frontend can currently be built for the TrimUI Model S and Linux (useful for testing and debugging).
+The frontend can currently be built for the TrimUI Model S, FunKey S, and Linux (useful for testing and debugging).
 
 First, fetch the repo with submodules:
 
@@ -50,6 +50,48 @@ make platform=trimui MINUI=1
 make platform=trimui MMENU=1
 ```
 
+To build for distribution:
+
+```
+make platform=trimui dist-gmenu
+make platform=trimui MINUI=1 dist-minui
+```
+
+These will output a directory structure that can be moved onto the SD card into `pkg/gmenunx` or `pkg/MinUI`.
+
+Or run
+
+```
+make platform=trimui picoarch.zip
+```
+
+To build a .zip file ready for SD card.
+
+### FunKey S instructions
+
+To build for FunKey S, you need a toolchain first, following [instructions](https://doc.funkey-project.com/developer_guide/tutorials/build_system/build_program_using_sdk/) on the FunKey wiki.
+
+To build generic binaries:
+
+```
+make platform=funkey-s
+```
+
+To build a specific core as .opk file:
+
+```
+make platform=funkey-s picoarch-gambatte.opk
+```
+
+Or run
+
+```
+make platform=funkey-s picoarch-funkey-s.zip
+```
+
+To build a .zip file containing all .opk files.
+
+
 ### Other build options
 
 To debug:
@@ -76,15 +118,6 @@ To completely clean the repo (will delete, pull, and patch all core repos from s
 make force-clean
 ```
 
-Distribution builds can also be made for gmenunx and MinUI:
-
-```
-make platform=trimui dist-gmenu
-make platform=trimui MINUI=1 dist-minui
-```
-
-These will output a directory structure that can be moved onto the SD card into `pkg/gmenunx` or `pkg/MinUI`.
-
 To build profiles for profile-guided optimization:
 
 ```
@@ -105,7 +138,7 @@ In order to make development and testing easier, the Makefile will pull and buil
 
 You will have to make changes when adding a core, since TrimUI is not a supported libretro platform. picoarch has a `patches/` directory containing needed changes to make cores work well in picoarch. Patches are applied in order after checking out the repository. 
 
-At a minimum, you need to add a `platform=trimui` section to the core Makefile.
+At a minimum, you need to add a `platform=trimui` section to the core Makefile if you are building for trimui.
 
 Some features and fixes are also included in `patches` -- it would be best to try to upstream them.
 

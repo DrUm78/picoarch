@@ -442,7 +442,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 	if (scale_size == SCALE_SIZE_CROP) {
 		scaler = scale_crop;
 		return;
-	} if (scale_size == SCALE_SIZE_FULL) {
+	} else if (scale_size == SCALE_SIZE_FULL) {
 		dst_w = SCREEN_WIDTH;
 		dst_h = SCREEN_HEIGHT;
 		dst_offs = 0;
