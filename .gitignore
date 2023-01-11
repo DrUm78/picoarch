@@ -1,5 +1,6 @@
 *.o
 *.so
+*.opk
 picoarch
 /pkg
 /profile

@@ -492,6 +492,8 @@ static const char h_scale_filter[]        =
 	"When stretching, how missing pixels are filled.\n"
 	"Nearest copies the last pixel. Sharp keeps pixels\n"
 	"aligned where possible. Smooth adds a blur effect.";
+
+static const char *men_scale_size[] = { "Native", "Aspect", "Full", NULL};
 #else
 static const char h_enable_drc[]      =
 	"Dynamically adjusts audio rate for\n"
@@ -503,19 +505,20 @@ static const char h_audio_buffer_size[]        =
 	"crackling at the cost of delayed sound.";
 
 static const char h_scale_size[]        =
-	"How much to stretch the screen when\n"
-	"scaling. Native does no stretching.\n"
-	"Aspect uses the correct aspect ratio.\n"
-	"Full uses the whole screen.";
+	"How to fill the display. Native does\n"
+	"no stretching. Aspect keeps the correct\n"
+	"aspect ratio. Full uses the whole\n"
+	"screen. Crop hides pixels on the sides.";
 
 static const char h_scale_filter[]        =
 	"When stretching, how missing pixels\n"
 	"are filled. Nearest copies the last\n"
 	"pixel. Sharp tries to keep pixels\n"
 	"aligned. Smooth adds a blur effect.";
-#endif
 
 static const char *men_scale_size[] = { "Native", "Aspect", "Full", "Crop", NULL};
+#endif
+
 static const char *men_scale_filter[] = { "Nearest", "Sharp", "Smooth", NULL};
 
 static menu_entry e_menu_video_options[] =

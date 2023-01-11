@@ -25,7 +25,8 @@ struct blend_args {
 } blend_args;
 
 static scaler_t scaler;
-static unsigned dst_w, dst_h, dst_offs;
+static scaler_t crop_scaler;
+static unsigned dst_w, dst_h, dst_offs, src_offs, w_offs;
 struct dimensions prev;
 
 #if __ARM_ARCH >= 5
@@ -105,26 +106,10 @@ static void scale_1x(unsigned w, unsigned h, size_t pitch, const void *src, void
 }
 
 static void scale_crop(unsigned w, unsigned h, size_t pitch, const void *src, void *dst) {
-	int dst_y = ((SCREEN_HEIGHT - (short)h) / 2);
-	int dst_x = ((SCREEN_WIDTH - (short)w) * SCREEN_BPP / 2);
+	src += src_offs;
+	w += w_offs;
 
-	if (dst_y < 0) {
-		src += -dst_y * pitch;
-		dst_y = 0;
-		h = SCREEN_HEIGHT;
-	}
-
-	if (dst_x < 0) {
-		src += -dst_x;
-		dst_x = 0;
-		w = SCREEN_WIDTH;
-	}
-
-	dst += dst_y * SCREEN_PITCH + dst_x;
-
-	for (unsigned y = 0; y < h; y++) {
-		memcpy(dst + y * SCREEN_PITCH, src + y * pitch, w * SCREEN_BPP);
-	}
+	crop_scaler(w, h, pitch, src, dst);
 }
 
 static void scale_nearest(unsigned w, unsigned h, size_t pitch, const void *src, void *dst) {
@@ -440,8 +425,42 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 	}
 
 	if (scale_size == SCALE_SIZE_CROP) {
-		scaler = scale_crop;
-		return;
+		int dst_x, dst_y;
+		src_offs = 0;
+
+		if (w <= 320) {
+			dst_x = ((SCREEN_WIDTH - (short)w) / 2);
+		} else {
+			/* Crop to 320px maximum. If larger, scale down after crop. */
+			int src_w;
+			if (strstr(core_name, "snes9x")) {
+				/* For SNES, keep aspect ratio same for hi-res and normal */
+				src_w = SCREEN_WIDTH * 2;
+			} else {
+				src_w = w / current_aspect_ratio;
+			}
+
+			dst_x = ((src_w - (short)w) / 2);
+		}
+
+		dst_y = ((SCREEN_HEIGHT - (short)h) / 2);
+		dst_w = w;
+		dst_h = h;
+
+		if (dst_y < 0) {
+			dst_y = 0;
+			dst_h = SCREEN_HEIGHT;
+		}
+
+		if (dst_x < 0) {
+			src_offs += -dst_x * SCREEN_BPP;
+			w_offs = dst_x * 2;
+			w += w_offs;
+			dst_x = 0;
+			dst_w = SCREEN_WIDTH;
+		}
+
+		dst_offs = dst_y * SCREEN_PITCH + dst_x * SCREEN_BPP;
 	} else if (scale_size == SCALE_SIZE_FULL) {
 		dst_w = SCREEN_WIDTH;
 		dst_h = SCREEN_HEIGHT;
@@ -499,7 +518,6 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 
 	if (!scaler && scale_filter == SCALE_FILTER_NEAREST) {
 		scaler = scale_nearest;
-		return;
 	}
 
 	if (!scaler && (scale_filter == SCALE_FILTER_SHARP || scale_filter == SCALE_FILTER_SMOOTH)) {
@@ -523,11 +541,19 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.h_bp[1] = blend_args.h_ratio_out >> 1;
 
 		scaler = scale_blend;
-		return;
 	}
 
 	if (!scaler) {
 		scaler = scale_1x;
+	}
+
+	if (scale_size == SCALE_SIZE_CROP) {
+		if (w <= SCREEN_WIDTH && h <= SCREEN_HEIGHT) {
+			crop_scaler = scale_1x;
+		} else {
+			crop_scaler = scaler;
+		}
+		scaler = scale_crop;
 	}
 }
 

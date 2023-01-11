@@ -182,6 +182,7 @@ cores: $(SOFILES)
 clean: clean-libpicofe
 	rm -f $(OBJS) $(BIN) $(SOFILES)
 	rm -rf pkg
+	rm -f *.opk
 
 clean-all: $(foreach core,$(CORES),clean-$(core)) clean
 
