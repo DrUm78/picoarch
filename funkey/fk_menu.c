@@ -232,7 +232,7 @@ static void update_aspect_ratio(void)
 		break;
 	case ASPECT_RATIOS_TYPE_SCALED:
 		scale_size = SCALE_SIZE_ASPECT;
-		scale_filter = SCALE_FILTER_SHARP;
+		scale_filter = SCALE_FILTER_SMOOTH;
 		break;
 	case ASPECT_RATIOS_TYPE_CROPPED:
 		scale_size = SCALE_SIZE_CROP;

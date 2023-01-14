@@ -224,7 +224,7 @@ void set_defaults(void)
 
 		if (!strcmp(core_name, "gambatte")) {
 			scale_size = SCALE_SIZE_ASPECT;
-			scale_filter = SCALE_FILTER_SHARP;
+			scale_filter = SCALE_FILTER_SMOOTH;
 		}
 
 		if (!strcmp(core_name, "pcsx_rearmed") ||
