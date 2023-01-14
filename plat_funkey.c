@@ -70,34 +70,33 @@ static const char * const in_sdl_key_names[SDLK_LAST] = {
 	[SDLK_n]         = "R",
 	[SDLK_v]         = "FN+L",
 	[SDLK_o]         = "FN+R",
-	[SDLK_1]         = "MENU+UP",
-	[SDLK_2]         = "MENU+DOWN",
-	[SDLK_3]         = "MENU+LEFT",
-	[SDLK_4]         = "MENU+RIGHT",
-	[SDLK_5]         = "MENU+B",
-	[SDLK_6]         = "MENU+A",
-	[SDLK_7]         = "MENU+X",
-	[SDLK_8]         = "MENU+Y",
-	[SDLK_9]         = "MENU+START",
-	[SDLK_0]         = "MENU+SELECT",
-	[SDLK_TAB]       = "MENU+L",
-	[SDLK_BACKSLASH] = "MENU+R",
+	[SDLK_1]         = "START+UP",
+	[SDLK_2]         = "START+DOWN",
+	[SDLK_3]         = "START+LEFT",
+	[SDLK_4]         = "START+RIGHT",
+	[SDLK_5]         = "START+B",
+	[SDLK_6]         = "START+A",
+	[SDLK_7]         = "START+X",
+	[SDLK_8]         = "START+Y",
+	[SDLK_0]         = "START+FN",
+	[SDLK_TAB]       = "START+L",
+	[SDLK_BACKSLASH] = "START+R",
 	[SDLK_q]         = "MENU",
 };
 
 static const struct mod_keymap in_sdl_mod_keymap[] = {
-	{ SDLK_u,         SDLK_1 },
-	{ SDLK_d,         SDLK_2 },
-	{ SDLK_l,         SDLK_3 },
-	{ SDLK_r,         SDLK_4 },
-	{ SDLK_b,         SDLK_5 },
-	{ SDLK_a,         SDLK_6 },
-	{ SDLK_x,         SDLK_7 },
-	{ SDLK_y,         SDLK_8 },
-	{ SDLK_s,         SDLK_9 },
-	{ SDLK_k,         SDLK_0 },
-	{ SDLK_TAB,       SDLK_TAB },          /* mod+L1 = L2 */
-	{ SDLK_BACKSPACE, SDLK_BACKSLASH },  /* mod+R1 = R2 */
+	{ SDLK_u, SDLK_1 },
+	{ SDLK_d, SDLK_2 },
+	{ SDLK_l, SDLK_3 },
+	{ SDLK_r, SDLK_4 },
+	{ SDLK_b, SDLK_5 },
+	{ SDLK_a, SDLK_6 },
+	{ SDLK_x, SDLK_7 },
+	{ SDLK_y, SDLK_8 },
+	{ SDLK_s, SDLK_9 },
+	{ SDLK_k, SDLK_0 },
+	{ SDLK_m, SDLK_TAB },        /* mod+L1 = L2 */
+	{ SDLK_n, SDLK_BACKSLASH },  /* mod+R1 = R2 */
 };
 
 static const struct in_pdata in_sdl_platform_data = {
@@ -107,9 +106,9 @@ static const struct in_pdata in_sdl_platform_data = {
 	.joy_map   = in_sdl_joy_map,
 	.jmap_size = array_size(in_sdl_joy_map),
 	.key_names = in_sdl_key_names,
-	/* .mod_key      = SDLK_ESCAPE,
-	 * .mod_keymap   = in_sdl_mod_keymap,
-	 * .modmap_size  = array_size(in_sdl_mod_keymap), */
+	.mod_key      = SDLK_s,
+	.mod_keymap   = in_sdl_mod_keymap,
+	.modmap_size  = array_size(in_sdl_mod_keymap),
 };
 
 #include "plat_sdl.c"
