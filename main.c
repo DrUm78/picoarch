@@ -692,8 +692,10 @@ int main(int argc, char **argv) {
 		adjust_audio();
 		current_core.retro_run();
 #ifdef FUNKEY_S
-		if (should_suspend)
+		if (should_suspend) {
+			toggle_fast_forward(1);
 			FK_Suspend();
+		}
 #endif
 
 		if (!should_quit)
