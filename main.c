@@ -222,7 +222,8 @@ void set_defaults(void)
 		scale_size = SCALE_SIZE_CROP;
 		scale_filter = SCALE_FILTER_SMOOTH;
 
-		if (!strcmp(core_name, "gambatte")) {
+		if (!strcmp(core_name, "gambatte") ||
+		    !strcmp(core_name, "mame2000")) {
 			scale_size = SCALE_SIZE_ASPECT;
 			scale_filter = SCALE_FILTER_SMOOTH;
 		}

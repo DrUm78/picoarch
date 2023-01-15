@@ -1,19 +1,5 @@
-diff --git a/src/libretro/libretro.c b/src/libretro/libretro.c
-index 2f37f52..c58fceb 100644
---- a/src/libretro/libretro.c
-+++ b/src/libretro/libretro.c
-@@ -948,6 +948,9 @@ bool retro_load_game(const struct retro_game_info *info)
-    /* skip disclaimer - skips 'nag screen' */
-    options.skip_disclaimer = skip_disclaimer;
- 
-+   options.vector_width = 320;
-+   options.vector_height = 240;
-+
- #if (HAS_CYCLONE || HAS_DRZ80)
-    int use_cyclone = 1;
-    int use_drz80 = 1;
 diff --git a/src/libretro/video.c b/src/libretro/video.c
-index f97ac05..d947468 100644
+index bb42a8e..c0f6755 100644
 --- a/src/libretro/video.c
 +++ b/src/libretro/video.c
 @@ -366,23 +366,13 @@ static void select_display_mode(int width,int height,int depth,int attributes,in
@@ -45,3 +31,18 @@ index f97ac05..d947468 100644
  	}
  
  	gp2x_set_video_mode(16,gfx_width,gfx_height);
+diff --git a/src/mame.c b/src/mame.c
+index 4d0cc3c..333a457 100644
+--- a/src/mame.c
++++ b/src/mame.c
+@@ -64,8 +64,8 @@ int run_game(int game)
+ 
+     if(!iOS_fixedRes)
+     {
+-	  options.vector_width = 640;
+-	  options.vector_height = 480;
++	  options.vector_width = 320;
++	  options.vector_height = 240;
+     }
+     else
+     {

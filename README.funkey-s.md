@@ -25,6 +25,7 @@ All emulators have:
 - FunKey menu
 - fast-forward
 - soft scaling options
+- START+button combo keybindings
 - per-game config
 - screenshots
 
