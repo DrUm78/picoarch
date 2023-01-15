@@ -7,11 +7,11 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 	},
 	{
 		.key = "fceumm_overscan_h",
-		.desc = "Crop Horz. Overscan",
+		.desc = "Crop Hrz. Overscan",
 	},
 	{
 		.key = "fceumm_overscan_v",
-		.desc = "Crop Vert. Overscan",
+		.desc = "Crop Vrt. Overscan",
 	},
 	{
 		.key = "fceumm_up_down_allowed",
@@ -55,6 +55,14 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 	},
 	{
 		.key = "fceumm_zapper_mode",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_zapper_trigger",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_zapper_sensor",
 		.blocked = true
 	},
 	{

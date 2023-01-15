@@ -23,7 +23,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
-ifeq ($(platform), funkey-s)
+ifneq ($(platform), trimui)
 CORES := $(CORES) snes9x2005_plus
 endif
 

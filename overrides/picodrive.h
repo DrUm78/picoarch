@@ -16,6 +16,7 @@ static const struct core_override_option picodrive_core_option_overrides[] = {
 	{
 		.key = "picodrive_sound_rate",
 		.desc = "Sample Rate",
+		.info = "Higher values increase sound quality. Lower values may increase performance. Native is the original sound chip rate (~53000) and is most accurate.",
 	},
 	{
 		.key = "picodrive_smsfm",

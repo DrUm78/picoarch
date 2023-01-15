@@ -2,6 +2,22 @@
 
 static const struct core_override_option pcsx_rearmed_core_option_overrides[] = {
 	{
+		.key = "pcsx_rearmed_region",
+		.info = "Specify which region the system is from. 'NTSC' is 60 Hz while 'PAL' is 50 Hz. 'Auto' will detect the region of the currently loaded content.",
+	},
+	{
+		.key = "pcsx_rearmed_bios",
+		.info = "Specify which BIOS to use. 'Auto' will attempt to load a real bios file. 'HLE' forces BIOS emulation, with lower compatibility.",
+	},
+	{
+		.key = "pcsx_rearmed_show_bios_bootlogo",
+		.info = "When using an official BIOS, whether to show the PlayStation logo at startup. Showing the boot logo may reduce compatibility.",
+	},
+	{
+		.key = "pcsx_rearmed_drc",
+		.info = "Dynamically recompile PSX CPU instructions to native instructions. Much faster, but may be less accurate.",
+	},
+	{
 		.key = "pcsx_rearmed_frameskip_type",
 		.info = "Skip frames to avoid audio crackling. Improves performance at the expense of visual smoothness. Will cause graphical glitches.",
 		.default_value = "auto",
@@ -29,6 +45,11 @@ static const struct core_override_option pcsx_rearmed_core_option_overrides[] = 
 		.key = "pcsx_rearmed_dithering",
 		.desc = "Dithering",
 		.info = "If disabled, turns off the dithering pattern the PSX applies to combat color banding.",
+	},
+	{
+		.key = "pcsx_rearmed_duping_enable",
+		.desc = "Frame Duping",
+		.info = "When enabled, provides a small performance improvement by repeating the previous frame if the core has nothing new to display.",
 	},
 	{
 		.key = "pcsx_rearmed_show_gpu_peops_settings",
@@ -101,8 +122,38 @@ static const struct core_override_option pcsx_rearmed_core_option_overrides[] = 
 		.default_value = "enabled"
 	},
 	{
+		.key = "pcsx_rearmed_gpu_slow_llists",
+		.desc = "Slow Linked Lists",
+	},
+	{
+		.key = "pcsx_rearmed_neon_interlace_enable",
+		.desc = "Interlaced Video",
+		.info = "When enabled, games that run in high resolution video modes (480i, 512i) produce interlaced video output.",
+	},
+	{
+		.key = "pcsx_rearmed_spu_interpolation",
+		.info = "Emulates audio interpolation. 'Gaussian' is closest to original. 'Simple' is faster, lower quality. 'Cubic' is slowest, higher clarity.",
+	},
+	{
+		.key = "pcsx_rearmed_noxadecoding",
+		.info = "Enable playback of XA audio tracks. Can be disabled to improve performance in games that include XA audio, at the expense of missing music.",
+	},
+	{
+		.key = "pcsx_rearmed_neon_enhancement_enable",
+		.blocked = true,
+	},
+	{
+		.key = "pcsx_rearmed_neon_enhancement_no_main",
+		.blocked = true,
+	},
+	{
 		.key = "pcsx_rearmed_gpu_thread_rendering",
 		.info = "Runs GPU commands in a thread. Sync waits for drawing to finish before vsync. Async will not wait unless there's another frame behind it."
+	},
+	{
+		.key = "pcsx_rearmed_spu_reverb",
+		.desc = "Reverb Effects",
+		.info = "Enable emulation of the PSX reverb feature. Disable to improve performance at the expense of reduced audio quality/authenticity.",
 	},
 	{
 		.key = "pcsx_rearmed_pe2_fix",
@@ -135,7 +186,11 @@ static const struct core_override_option pcsx_rearmed_core_option_overrides[] = 
 		.desc = "Disable GTE Flags",
 	},
 	{
-		.key = "pcsx_rearmed_show_other_input_settings",
+		.key = "pcsx_rearmed_nostalls",
+		.desc = "Disable Stalls",
+	},
+	{
+		.key = "pcsx_rearmed_show_input_settings",
 		.blocked = true
 	},
 	{
@@ -156,6 +211,10 @@ static const struct core_override_option pcsx_rearmed_core_option_overrides[] = 
 	},
 	{
 		.key = "pcsx_rearmed_icache_emulation",
+		.blocked = true
+	},
+	{
+		.key = "pcsx_rearmed_nocompathacks",
 		.blocked = true
 	},
 	{ NULL }

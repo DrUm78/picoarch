@@ -23,6 +23,10 @@ static const struct core_override_option snes9x2005_core_option_overrides[] = {
 		.default_value = "3"
 	},
 	{
+		.key = "snes9x_2005_low_pass_range",
+		.info = "Specify the cut-off frequency of the audio filter. Higher values increase the perceived 'strength' of the filter."
+	},
+	{
 		.key = "snes9x_2005_overclock_cycles",
 		.desc = "Overclock (Restart)",
 		.info = "Alleviate normal SNES slowdown. Compatible keeps as much compatibility as possible. Max will reduce more slowdown but break more games.",
