@@ -33,11 +33,11 @@
 #include "fk_menu.h"
 #include "fk_instant_play.h"
 #include "core.h"
+#include "util.h"
 
 #ifndef SHELL_CMD_POWERDOWN
-#define SHELL_CMD_POWERDOWN                 "shutdown_funkey"
-#define SHELL_CMD_SCHEDULE_POWERDOWN        "sched_shutdown"
-#define SHELL_CMD_CANCEL_SCHED_POWERDOWN    "cancel_sched_powerdown"
+#define SHELL_CMD_POWERDOWN                 "powerdown"
+#define SHELL_CMD_POWERDOWN_HANDLE          "powerdown handle"
 #endif
 
 static char *prog_name;
@@ -53,7 +53,7 @@ static void handle_sigusr1(int signal)
     FK_EndMenu();
 
     /* Send command to cancel any previously scheduled powerdown */
-    fp = popen(SHELL_CMD_CANCEL_SCHED_POWERDOWN, "r");
+    fp = popen(SHELL_CMD_POWERDOWN_HANDLE, "r");
     if (fp == NULL)
     {
         /* Countdown is still ticking, so better do nothing
@@ -74,17 +74,32 @@ static void handle_sigusr1(int signal)
 
 void FK_Suspend(void)
 {
+    FILE *fp;
+    char pidcmd[100];
+
     state_slot = AUTOSAVE_SLOT;
-    if(!state_write()) {
-        printf("Save failed");
+    if(state_write()) {
+        printf("Save failed\n");
         state_slot = 0;
     }
 
     sram_write();
     save_config(CONFIG_TYPE_AUTO);
 
-	/* Perform Instant Play save and shutdown */
-	execlp(SHELL_CMD_INSTANT_PLAY, SHELL_CMD_INSTANT_PLAY, "save", prog_name, core_path, content->path, NULL);
+    PA_INFO("Suspending with %s %s %s %s %s\n", SHELL_CMD_INSTANT_PLAY, "save", prog_name, core_path, content->path);
+
+    snprintf(pidcmd, array_size(pidcmd), "pid record %d", getpid());
+
+    fp = popen(pidcmd, "r");
+    if (fp == NULL)
+        PA_ERROR("Failed to update stored pid\n");
+
+    pclose(fp);
+
+    fflush(stdout);
+
+    /* Perform Instant Play save and shutdown */
+    execlp(SHELL_CMD_INSTANT_PLAY, SHELL_CMD_INSTANT_PLAY, "save", prog_name, core_path, content->path, NULL);
 
     /* Should not be reached */
     printf("Failed to perform shutdown\n");

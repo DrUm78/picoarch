@@ -129,9 +129,8 @@ typedef enum {RESUME_OPTIONS} ENUM_RESUME_OPTIONS;
 #define SHELL_CMD_USB_CHECK_IS_SHARING      "share is_sharing"
 #endif
 #ifdef HAS_MENU_POWERDOWN
-#define SHELL_CMD_POWERDOWN                 "shutdown_funkey"
-#define SHELL_CMD_SCHEDULE_POWERDOWN        "sched_shutdown"
-#define SHELL_CMD_CANCEL_SCHED_POWERDOWN    "cancel_sched_powerdown"
+#define SHELL_CMD_POWERDOWN                 "powerdown"
+#define SHELL_CMD_POWERDOWN_HANDLE          "powerdown handle"
 #endif
 #ifdef HAS_MENU_LAUNCHER
 #define SHELL_CMD_SET_LAUNCHER_GMENU2X      "set_launcher gmenu2x"
