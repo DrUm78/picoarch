@@ -34,6 +34,7 @@ bool should_quit = false;
 unsigned current_audio_buffer_size;
 char core_name[MAX_PATH];
 int config_override = 0;
+int resume_slot = -1;
 static int last_screenshot = 0;
 
 static uint32_t vsyncs;
@@ -226,6 +227,11 @@ void set_defaults(void)
 		    !strcmp(core_name, "mame2000")) {
 			scale_size = SCALE_SIZE_ASPECT;
 			scale_filter = SCALE_FILTER_SMOOTH;
+		}
+
+		if (!strcmp(core_name, "fake-08")) {
+			scale_size = SCALE_SIZE_ASPECT;
+			scale_filter = SCALE_FILTER_NEAREST;
 		}
 
 		if (!strcmp(core_name, "pcsx_rearmed") ||
@@ -584,6 +590,18 @@ static void adjust_audio(void) {
 	}
 }
 
+
+int state_resume(void) {
+	int ret = 0;
+
+	if (resume_slot != -1) {
+		state_slot = resume_slot;
+		ret = state_read();
+		resume_slot = -1;
+	}
+	return ret;
+}
+
 int main(int argc, char **argv) {
 	char content_path[MAX_PATH];
 #ifdef FUNKEY_S
@@ -677,6 +695,7 @@ int main(int argc, char **argv) {
 		}
 
 		instant_play = false;
+		FK_InitInstantPlay(argc, argv);
 	}
 #endif
 	show_startup_message();
@@ -685,7 +704,6 @@ int main(int argc, char **argv) {
 #ifdef FUNKEY_S
 	remove(autosave_path);
 	remove_config(CONFIG_TYPE_AUTO);
-	FK_InitInstantPlay(argc, argv);
 #endif
 
 	do {

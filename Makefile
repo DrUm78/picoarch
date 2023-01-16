@@ -24,7 +24,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
-CORES := $(CORES) snes9x2005_plus
+CORES := $(CORES) fake-08 snes9x2005_plus
 endif
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
@@ -33,6 +33,12 @@ beetle-pce-fast_TYPES = pce,cue,ccd,chd,toc,m3u
 
 bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
 bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
+
+fake-08_REPO = https://github.com/jtothebell/fake-08
+fake-08_BUILD_PATH = fake-08/platform/libretro
+fake-08_MAKEFILE = Makefile
+fake-08_CORE = fake08_libretro.so
+fake-08_TYPES = p8,png
 
 fbalpha2012_BUILD_PATH = fbalpha2012/svn-current/trunk
 fbalpha2012_MAKEFILE = makefile.libretro
@@ -370,6 +376,9 @@ bluemsx_NAME = blueMSX
 bluemsx_ROM_DIR = /mnt/MSX
 bluemsx_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/dingux-msx.png
 bluemsx_ICON = dingux-msx
+
+fake-08_NAME = fake-08
+fake-08_ROM_DIR = /mnt/PICO-8
 
 fbalpha2012_NAME = fba2012
 fbalpha2012_ROM_DIR = /mnt/Arcade

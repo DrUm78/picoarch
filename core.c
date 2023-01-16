@@ -26,7 +26,6 @@ double frame_rate;
 double aspect_ratio;
 unsigned audio_buffer_size_override;
 int state_slot;
-int resume_slot = -1;
 
 static char config_dir[MAX_PATH];
 static char save_dir[MAX_PATH];
@@ -218,16 +217,6 @@ error:
 		fclose(state_file);
 
 	sync();
-	return ret;
-}
-
-int state_resume(void) {
-	int ret = 0;
-	if (resume_slot != -1) {
-		state_slot = resume_slot;
-		ret = state_read();
-		resume_slot = -1;
-	}
 	return ret;
 }
 

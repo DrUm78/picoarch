@@ -36,6 +36,7 @@ extern bool should_quit;
 extern unsigned current_audio_buffer_size;
 extern char core_name[MAX_PATH];
 extern int config_override;
+extern int resume_slot;
 
 #ifdef MMENU
 extern void* mmenu;

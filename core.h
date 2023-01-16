@@ -41,7 +41,6 @@ extern double frame_rate;
 extern double aspect_ratio;
 extern unsigned audio_buffer_size_override;
 extern int state_slot;
-extern int resume_slot;
 
 void config_file_name(char *buf, size_t len, config_type config_type);
 void save_relative_path(char *buf, size_t len, const char *basename);
