@@ -1,5 +1,5 @@
 diff --git a/in_sdl.c b/in_sdl.c
-index a84c781..bc0e79b 100644
+index a84c781..4813cc0 100644
 --- a/in_sdl.c
 +++ b/in_sdl.c
 @@ -19,14 +19,24 @@
@@ -51,7 +51,7 @@ index a84c781..bc0e79b 100644
  		free(state);
  	}
  }
-@@ -259,6 +279,169 @@ static int get_keystate(keybits_t *keystate, int sym)
+@@ -259,6 +279,176 @@ static int get_keystate(keybits_t *keystate, int sym)
  	return !!(*ks_word & mask);
  }
  
@@ -125,8 +125,15 @@ index a84c781..bc0e79b 100644
 +				event->key.state = SDL_PRESSED;
 +				SDL_PushEvent(event);
 +
-+				/* Delay keyup to force handling */
-+				state->delayed_key = event->key.keysym.sym;
++				if (get_keystate(state->emu_keys, mod_key)) {
++					/* emu keys handled immediately, no need to delay */
++					event->type = SDL_KEYUP;
++					event->key.state = SDL_RELEASED;
++					SDL_PushEvent(event);
++				} else {
++					/* Delay keyup to force handling */
++					state->delayed_key = event->key.keysym.sym;
++				}
 +			}
 +			break;
 +		case MOD_YES:
@@ -207,7 +214,7 @@ index a84c781..bc0e79b 100644
 +
 +	if (state->delayed_key != 0) {
 +		delayed_event.type = SDL_KEYUP;
-+		delayed_event.key.state = SDL_PRESSED;
++		delayed_event.key.state = SDL_RELEASED;
 +		delayed_event.key.keysym.sym = state->delayed_key;
 +		SDL_PushEvent(&delayed_event);
 +		state->delayed_key = 0;
@@ -221,7 +228,7 @@ index a84c781..bc0e79b 100644
  static int handle_event(struct in_sdl_state *state, SDL_Event *event,
  	int *kc_out, int *down_out, int *emu_out)
  {
-@@ -363,6 +546,9 @@ static int collect_events(struct in_sdl_state *state, int *one_kc, int *one_down
+@@ -363,6 +553,9 @@ static int collect_events(struct in_sdl_state *state, int *one_kc, int *one_down
  
  	SDL_PumpEvents();
  
@@ -231,7 +238,7 @@ index a84c781..bc0e79b 100644
  	num_events = SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, mask);
  
  	for (num_peeped_events = 0; num_peeped_events < num_events; num_peeped_events += count) {
-@@ -406,12 +592,34 @@ out:
+@@ -406,12 +599,34 @@ out:
  	return retval;
  }
  
@@ -266,7 +273,7 @@ index a84c781..bc0e79b 100644
  	collect_events(state, NULL, NULL);
  
  	for (i = 0; i < SDLK_LAST / KEYBITS_WORD_BITS + 1; i++) {
-@@ -510,6 +718,35 @@ static int in_sdl_clean_binds(void *drv_data, int *binds, int *def_finds)
+@@ -510,6 +725,35 @@ static int in_sdl_clean_binds(void *drv_data, int *binds, int *def_finds)
  	return cnt;
  }
  
@@ -302,7 +309,7 @@ index a84c781..bc0e79b 100644
  static const in_drv_t in_sdl_drv = {
  	.prefix         = IN_SDL_PREFIX,
  	.probe          = in_sdl_probe,
-@@ -519,6 +756,8 @@ static const in_drv_t in_sdl_drv = {
+@@ -519,6 +763,8 @@ static const in_drv_t in_sdl_drv = {
  	.update_keycode = in_sdl_update_keycode,
  	.menu_translate = in_sdl_menu_translate,
  	.clean_binds    = in_sdl_clean_binds,
@@ -346,7 +353,7 @@ index 360b65b..f95ddf0 100644
  
  /* to be called by drivers */
 diff --git a/menu.c b/menu.c
-index e91f84a..616daac 100644
+index 3c98f1f..a506d27 100644
 --- a/menu.c
 +++ b/menu.c
 @@ -1455,6 +1455,7 @@ static void key_config_loop(const me_bind_action *opts, int opt_cnt, int player_
