@@ -24,7 +24,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
-CORES := $(CORES) fake-08 snes9x2005_plus
+CORES := $(CORES) fake-08 snes9x2005_plus snes9x2010
 endif
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
@@ -87,6 +87,8 @@ snes9x2005_plus_REPO = https://git.crowdedwood.com/snes9x2005
 snes9x2005_plus_REVISION = performance
 snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
 snes9x2005_plus_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
+
+snes9x2010_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 ifeq ($(platform), trimui)
 	OBJS += plat_trimui.o
@@ -444,6 +446,11 @@ snes9x2005_plus_NAME = snes9x2005+
 snes9x2005_plus_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
 snes9x2005_plus_ICON = snes
 snes9x2005_plus_ROM_DIR = /mnt/SNES
+
+snes9x2010_NAME = snes9x2010
+snes9x2010_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
+snes9x2010_ICON = snes
+snes9x2010_ROM_DIR = /mnt/SNES
 
 define CORE_opk =
 
