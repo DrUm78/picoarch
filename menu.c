@@ -240,7 +240,7 @@ const char *select_content(void) {
 	const char **exts_with_zip = NULL;
 	int i = 0, size = 0;
 
-	if (content && content->path) {
+	if (content && strlen(content->path)) {
 		strncpy(content_path, content->path, sizeof(content_path) - 1);
 	} else if (getenv("CONTENT_DIR")) {
 		strncpy(content_path, getenv("CONTENT_DIR"), sizeof(content_path) - 1);

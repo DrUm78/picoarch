@@ -1,6 +1,6 @@
 # picoarch - a libretro frontend designed for small screens and low power
 
-picoarch runs libretro cores (emulators) for various systems with low overhead and UI designed for small screen, low-powered devices like the Trimui Model S (PowKiddy A66) and Funkey S.
+picoarch runs libretro cores (emulators) for various systems with low overhead and UI designed for small screen, low-powered devices like the Trimui Model S (PowKiddy A66) and FunKey S.
 
 It supports: 
 

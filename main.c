@@ -393,7 +393,7 @@ void handle_emu_action(emu_action action)
 		sram_write();
 		in_menu = true;
 #if defined(MMENU)
-		if (mmenu && content && content->path) {
+		if (mmenu && content && strlen(content->path)) {
 			ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
 			SDL_Surface *screen = SDL_GetVideoSurface();
 			MenuReturnStatus status = ShowMenu(content->path, state_allowed() ? save_template_path : NULL, screen, kMenuEventKeyDown);
