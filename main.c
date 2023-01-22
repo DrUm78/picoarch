@@ -693,10 +693,10 @@ int main(int argc, char **argv) {
 				resume_slot = AUTOSAVE_SLOT;
 			}
 		}
-
-		instant_play = false;
-		FK_InitInstantPlay(argc, argv);
 	}
+
+	instant_play = false;
+	FK_InitInstantPlay(argc, argv);
 #endif
 	show_startup_message();
 	state_resume();
