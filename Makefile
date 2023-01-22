@@ -147,10 +147,12 @@ print-%:
 all: $(BIN) cores
 
 libpicofe/.patched:
-	cd libpicofe && git apply -p1 < ../patches/libpicofe/0001-key-combos.patch && git apply -p1 < ../patches/libpicofe/0002-small-screen.patch && touch .patched
+	cd libpicofe && ($(foreach patch, $(sort $(wildcard patches/libpicofe/*.patch)), git apply -p1 < ../$(patch) &&) touch .patched)
+
+reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
 
 clean-libpicofe:
-	test ! -f libpicofe/.patched || (cd libpicofe && git apply -p1 -R < ../patches/libpicofe/0002-small-screen.patch && git apply -p1 -R < ../patches/libpicofe/0001-key-combos.patch && rm .patched)
+	test ! -f libpicofe/.patched || (cd libpicofe && ($(foreach patch, $(call reverse,$(sort $(wildcard patches/libpicofe/*.patch))), git apply -R -p1 < ../$(patch) &&) rm .patched))
 
 plat_trimui.o: plat_sdl.c
 plat_funkey.o: plat_sdl.c
