@@ -437,7 +437,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 				/* For SNES, keep aspect ratio same for hi-res and normal */
 				src_w = SCREEN_WIDTH * 2;
 			} else {
-				src_w = w / current_aspect_ratio;
+				src_w = w * ((double)SCREEN_WIDTH / (double)320);
 			}
 
 			dst_x = ((src_w - (short)w) / 2);
