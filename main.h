@@ -65,6 +65,7 @@ int remove_config(config_type config_type);
 void handle_emu_action(emu_action action);
 void pa_log(enum retro_log_level level, const char *fmt, ...);
 void pa_track_render(void);
+void finish(void);
 int quit(int code);
 
 #endif /* __MAIN_H__ */

@@ -80,5 +80,5 @@ const struct core_override_fast_forward mame2000_fast_forward = {
 	.emu_actions = mame2000_emu_actions,                 \
 	.emu_action_size = array_size(mame2000_emu_actions), \
 	.options = mame2000_core_option_overrides,           \
-	.block_load_content = 1                              \
+	.needs_reopen = 1,                                   \
 }

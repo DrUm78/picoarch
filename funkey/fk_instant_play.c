@@ -41,6 +41,7 @@
 #endif
 
 static char *prog_name;
+int instant_play = 0;
 
 /* Handler for SIGUSR1, caused by closing the console */
 static void handle_sigusr1(int signal)
@@ -77,12 +78,7 @@ void FK_Suspend(void)
     FILE *fp;
     char pidcmd[100];
 
-    state_slot = AUTOSAVE_SLOT;
-    if(state_write()) {
-        printf("Save failed\n");
-        state_slot = 0;
-    }
-
+    FK_Autosave();
     sram_write();
     save_config(CONFIG_TYPE_AUTO);
 
@@ -108,10 +104,61 @@ void FK_Suspend(void)
     exit(0);
 }
 
+void FK_LoadNewGame(const char *fname)
+{
+    char prog_path[PATH_MAX];
+    realpath(prog_name, prog_path);
+
+    /* FunKey uses musl libc so dlclose is no-op. If core depends on
+     * all statics being reset, FunKey cannot reload it. Instead,
+     * re-exec with new content. */
+    PA_INFO("Restarting with %s %s %s\n", prog_path, core_path, fname);
+    finish();
+    execl(prog_path, prog_name, core_path, fname, NULL);
+
+    /* Should not be reached */
+    PA_ERROR("Failed to load game\n");
+
+    /* Exit application */
+    exit(0);
+}
+
+void FK_Autosave(void)
+{
+    if (state_allowed()) {
+        int prev_state_slot = state_slot;
+        state_slot = AUTOSAVE_SLOT;
+        state_write();
+        state_slot = prev_state_slot;
+    }
+}
+
+void FK_Resume(void)
+{
+    char autosave_path[MAX_PATH];
+
+    state_file_name(autosave_path, MAX_PATH, AUTOSAVE_SLOT);
+    if (access(autosave_path, F_OK) == 0) {
+        if (instant_play) {
+            resume_slot = AUTOSAVE_SLOT;
+        } else {
+            SDL_Surface *screen = SDL_GetVideoSurface();
+            int resume = FK_RunResumeMenu(screen);
+            if (resume == RESUME_YES) {
+                resume_slot = AUTOSAVE_SLOT;
+            }
+        }
+    }
+
+    instant_play = false;
+    state_resume();
+
+    remove(autosave_path);
+    remove_config(CONFIG_TYPE_AUTO);
+}
 
 void FK_InitInstantPlay(int argc, char **argv)
 {
     prog_name = argv[0];
     signal(SIGUSR1, handle_sigusr1);
 }
-

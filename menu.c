@@ -8,11 +8,17 @@
 #include "scale.h"
 #include "util.h"
 
+#ifdef FUNKEY_S
+#include "funkey/fk_instant_play.h"
+#endif
+
 static int drew_alt_bg = 0;
 
 static char cores_path[MAX_PATH];
 static struct dirent **corelist = NULL;
 static int corelist_len = 0;
+
+static const char *new_fname = NULL;
 
 #define MENU_ALIGN_LEFT 0
 #define MENU_X2 0
@@ -306,7 +312,29 @@ static int menu_loop_select_content(int id, int keys) {
 	if (fname == NULL)
 		return -1;
 
-	core_unload_content();
+	new_fname = fname;
+
+	return 1;
+}
+
+static void load_new_content(const char *fname) {
+	const struct core_override *override = get_overrides();
+
+	if (!override || override->needs_reopen) {
+#ifdef FUNKEY_S
+		FK_LoadNewGame(fname);
+		/* Does not return */
+#else
+		core_close();
+		core_open(core_path);
+#endif
+	} else {
+#ifdef FUNKEY_S
+		FK_Autosave();
+#endif
+		core_unload();
+	}
+	core_load();
 
 	content = content_init(fname);
 	if (!content) {
@@ -328,7 +356,9 @@ static int menu_loop_select_content(int id, int keys) {
 		state_resume();
 	}
 
-	return 1;
+#ifdef FUNKEY_S
+	FK_Resume();
+#endif
 }
 
 static int menu_loop_disc(int id, int keys)
@@ -685,7 +715,6 @@ void menu_loop(void)
 {
 	static int sel = 0;
 	bool needs_disc_ctrl = disc_get_count() > 1;
-	const struct core_override *override = get_overrides();
 
 	plat_video_menu_enter(1);
 
@@ -696,9 +725,6 @@ void menu_loop(void)
 	me_enable(e_menu_main, MA_MAIN_CHEATS, cheats != NULL);
 
 	me_enable(e_menu_main, MA_MAIN_DISC_CTRL, needs_disc_ctrl);
-
-	if (override)
-		me_enable(e_menu_main, MA_MAIN_CONTENT_SEL, !override->block_load_content);
 
 #ifdef MMENU
 	if (state_allowed()) {
@@ -711,6 +737,11 @@ void menu_loop(void)
 	/* wait until menu, ok, back is released */
 	while (in_menu_wait_any(NULL, 50) & (PBTN_MENU|PBTN_MOK|PBTN_MBACK))
 		;
+
+	if (new_fname) {
+		load_new_content(new_fname);
+		new_fname = NULL;
+	}
 
 	/* Force the hud to clear */
 	plat_video_set_msg(NULL, 0, 0);

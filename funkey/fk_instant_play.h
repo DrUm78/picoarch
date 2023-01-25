@@ -39,8 +39,12 @@ extern "C" {
 #include <signal.h>
 
 #define AUTOSAVE_SLOT 99
+extern int instant_play;
 
 extern void FK_InitInstantPlay(int argc, char **argv);
+extern void FK_LoadNewGame(const char *fname);
+extern void FK_Autosave(void);
+extern void FK_Resume(void);
 extern void FK_Suspend(void);
 
 /* Ends C function definitions when using C++ */

@@ -715,14 +715,17 @@ const char **core_extensions(void) {
 }
 
 void core_unload(void) {
-	PA_INFO("Unloading core...\n");
-
 	if (current_core.initialized) {
 		core_unload_content();
 		current_core.retro_deinit();
 		current_core.initialized = false;
 	}
+}
 
+void core_close(void) {
+	PA_INFO("Unloading core...\n");
+
+	core_unload();
 	string_list_free(extensions);
 	extensions = NULL;
 

@@ -25,7 +25,6 @@ char save_template_path[MAX_PATH];
 #ifdef FUNKEY_S
 #include "funkey/fk_menu.h"
 #include "funkey/fk_instant_play.h"
-static bool instant_play = false;
 bool should_suspend = false;
 #endif
 
@@ -610,10 +609,6 @@ int state_resume(void) {
 
 int main(int argc, char **argv) {
 	char content_path[MAX_PATH];
-#ifdef FUNKEY_S
-	char autosave_path[MAX_PATH];
-#endif
-
 
 	if (argc > 1) {
 		if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
@@ -662,20 +657,6 @@ int main(int argc, char **argv) {
 	load_config();
 	core_load();
 
-	if (core_load_content(content)) {
-		quit(-1);
-	}
-
-	load_config_keys();
-
-#ifdef MMENU
-
-	mmenu = dlopen("libmmenu.so", RTLD_LAZY);
-	if (mmenu) {
-		ResumeSlot_t ResumeSlot = (ResumeSlot_t)dlsym(mmenu, "ResumeSlot");
-		if (ResumeSlot) resume_slot = ResumeSlot();
-	}
-#endif
 #ifdef FUNKEY_S
 	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP) == 0) {
 		PA_ERROR("Error initializing SDL_Image\n");
@@ -686,30 +667,30 @@ int main(int argc, char **argv) {
 		PA_ERROR("Error initializing SDL_ttf\n");
 		quit(-1);
 	}
-	FK_InitMenu();
+#endif
 
-	state_file_name(autosave_path, MAX_PATH, AUTOSAVE_SLOT);
-	if (access(autosave_path, F_OK) == 0) {
-		if (instant_play) {
-			resume_slot = AUTOSAVE_SLOT;
-		} else {
-			SDL_Surface *screen = SDL_GetVideoSurface();
-			int resume = FK_RunResumeMenu(screen);
-			if (resume == RESUME_YES) {
-				resume_slot = AUTOSAVE_SLOT;
-			}
-		}
+	if (core_load_content(content)) {
+		quit(-1);
 	}
 
-	instant_play = false;
-	FK_InitInstantPlay(argc, argv);
-#endif
-	show_startup_message();
+	load_config_keys();
+
+#ifdef MMENU
+	mmenu = dlopen("libmmenu.so", RTLD_LAZY);
+	if (mmenu) {
+		ResumeSlot_t ResumeSlot = (ResumeSlot_t)dlsym(mmenu, "ResumeSlot");
+		if (ResumeSlot) resume_slot = ResumeSlot();
+	}
+
 	state_resume();
+#endif
+
+	show_startup_message();
 
 #ifdef FUNKEY_S
-	remove(autosave_path);
-	remove_config(CONFIG_TYPE_AUTO);
+	FK_InitMenu();
+	FK_Resume();
+	FK_InitInstantPlay(argc, argv);
 #endif
 
 	do {
@@ -731,21 +712,20 @@ int main(int argc, char **argv) {
 	return quit(0);
 }
 
-int quit(int code) {
-	menu_finish();
-
+void finish(void) {
 #ifdef FUNKEY_S
-	if (current_core.initialized && state_allowed()) {
-		state_slot = AUTOSAVE_SLOT;
-		state_write();
-	}
-
+	FK_Autosave();
 	FK_EndMenu();
 	TTF_Quit();
 	IMG_Quit();
 #endif
 
-	core_unload();
+	menu_finish();
+	core_close();
 	plat_finish();
+}
+
+int quit(int code) {
+	finish();
 	exit(code);
 }

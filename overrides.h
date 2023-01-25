@@ -35,7 +35,7 @@ struct core_override {
 	me_bind_action* emu_actions;
 	const size_t emu_action_size;
 	const struct core_override_option* options;
-	int block_load_content;
+	int needs_reopen;
 };
 
 #define CORE_OVERRIDE(override, key, fallback) ((override && override->key) ? (override->key) : (fallback))
