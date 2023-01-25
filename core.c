@@ -355,6 +355,11 @@ static bool pa_environment(unsigned cmd, void *data) {
 
 		break;
 	}
+	case RETRO_ENVIRONMENT_SHUTDOWN: { /* 7 */
+		should_quit = 1;
+
+		break;
+	}
 	case RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY: { /* 9 */
 		const char **out = (const char **)data;
 		if (out)
