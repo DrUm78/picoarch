@@ -36,6 +36,7 @@ char core_name[MAX_PATH];
 int config_override = 0;
 int resume_slot = -1;
 static int last_screenshot = 0;
+static emu_action eaction = EACTION_NONE;
 
 static uint32_t vsyncs;
 static uint32_t renders;
@@ -379,12 +380,11 @@ int remove_config(config_type config_type) {
 	return ret;
 }
 
-void handle_emu_action(emu_action action)
-{
+static void perform_emu_action(void) {
 	static emu_action prev_action = EACTION_NONE;
-	if (prev_action != EACTION_NONE && prev_action == action) return;
+	if (prev_action != EACTION_NONE && prev_action == eaction) return;
 
-	switch (action)
+	switch (eaction)
 	{
 	case EACTION_NONE:
 		break;
@@ -475,7 +475,13 @@ void handle_emu_action(emu_action action)
 		break;
 	}
 
-	prev_action = action;
+	prev_action = eaction;
+	eaction = EACTION_NONE;
+}
+
+void handle_emu_action(emu_action action) {
+	if (action != EACTION_NONE)
+		eaction = action;
 }
 
 void pa_log(enum retro_log_level level, const char *fmt, ...) {
@@ -710,6 +716,7 @@ int main(int argc, char **argv) {
 		count_fps();
 		adjust_audio();
 		current_core.retro_run();
+		perform_emu_action();
 #ifdef FUNKEY_S
 		if (should_suspend) {
 			toggle_fast_forward(1);
