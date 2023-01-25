@@ -18,14 +18,15 @@ CFLAGS     += -I./ -I./libretro-common/include/ $(shell $(SYSROOT)/usr/bin/sdl-c
 LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 
 # Unpolished or slow cores that build
-# EXTRA_CORES += fbalpha2012
-# EXTRA_CORES += mame2003_plus
+# EXTRA_CORES += fbalpha2012 mame2003_plus prboom scummvm tyrquake
 
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
 CORES := $(CORES) fake-08 snes9x2005_plus snes9x2010
 endif
+
+#CORES=tyrquake
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
 beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
@@ -70,8 +71,13 @@ pcsx_rearmed_TYPES = bin,cue,img,mdf,pbp,toc,cbn,m3u,chd
 picodrive_MAKEFILE = Makefile.libretro
 picodrive_TYPES = bin,gen,smd,md,32x,cue,iso,chd,sms,gg,m3u,68k,sgd
 
+prboom_REPO = https://github.com/libretro/libretro-prboom
+prboom_TYPES = wad,iwad,pwad,lmp
+
 quicknes_REPO = https://github.com/libretro/QuickNES_Core
 quicknes_TYPES = nes
+
+scummvm_TYPES = scummvm
 
 smsplus-gx_MAKEFILE = Makefile.libretro
 smsplus-gx_CORE = smsplus_libretro.so
@@ -89,6 +95,8 @@ snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
 snes9x2005_plus_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 snes9x2010_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
+
+tyrquake_TYPES = pak
 
 ifeq ($(platform), trimui)
 	OBJS += plat_trimui.o
@@ -189,10 +197,13 @@ $(foreach core,$(CORES),$(eval $(call CORE_template,$(core))))
 
 cores: $(SOFILES)
 
-clean: clean-libpicofe
-	rm -f $(OBJS) $(BIN) $(SOFILES)
+clean-picoarch:
+	rm -f $(OBJS) $(BIN)
 	rm -rf pkg
 	rm -f *.opk
+
+clean: clean-libpicofe clean-picoarch
+	rm -f $(SOFILES)
 
 clean-all: $(foreach core,$(CORES),clean-$(core)) clean
 
@@ -505,6 +516,30 @@ picoarch.opk: $(BIN) cores
 	cp $(BIN) $(SOFILES) .opkdata
 	cd .opkdata && curl -L -O https://raw.githubusercontent.com/FunKey-Project/sdlretro/master/data/sdlretro_icon.png
 	cd .opkdata && mksquashfs * ../picoarch.opk -all-root -no-xattrs -noappend -no-exports
+	rm -r .opkdata
+
+define picoarch_lite_DESKTOP
+[Desktop Entry]
+Name=picoarch-lite
+Comment=Small screen libretro frontend
+Exec=picoarch %f
+Icon=sdlretro_icon
+SelectorBrowser=true
+SelectorDir=/mnt/FunKey/.picoarch/cores
+SelectorFilter=so
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=emulators;
+endef
+
+picoarch-lite.opk: $(BIN)
+	mkdir -p .opkdata
+	$(file >picoarch.funkey-s.desktop,$(picoarch_lite_DESKTOP))
+	mv picoarch.funkey-s.desktop .opkdata
+	cp $(BIN) .opkdata
+	cd .opkdata && curl -L -O https://raw.githubusercontent.com/FunKey-Project/sdlretro/master/data/sdlretro_icon.png
+	cd .opkdata && mksquashfs * ../picoarch-lite.opk -all-root -no-xattrs -noappend -no-exports
 	rm -r .opkdata
 
 picoarch-funkey-s.zip: picoarch.opk $(foreach core, $(CORES), picoarch-$(core).opk)
