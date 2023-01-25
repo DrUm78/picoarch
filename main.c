@@ -381,9 +381,12 @@ int remove_config(config_type config_type) {
 
 static void perform_emu_action(void) {
 	static emu_action prev_action = EACTION_NONE;
-	if (prev_action != EACTION_NONE && prev_action == eaction) return;
+	emu_action action = eaction;
+	eaction = EACTION_NONE;
 
-	switch (eaction)
+	if (prev_action != EACTION_NONE && prev_action == action) return;
+
+	switch (action)
 	{
 	case EACTION_NONE:
 		break;
@@ -474,8 +477,7 @@ static void perform_emu_action(void) {
 		break;
 	}
 
-	prev_action = eaction;
-	eaction = EACTION_NONE;
+	prev_action = action;
 }
 
 void handle_emu_action(emu_action action) {
