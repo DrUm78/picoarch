@@ -65,6 +65,7 @@ int core_open(const char *corefile);
 void core_load(void);
 int core_load_content(struct content *content);
 void core_apply_cheats(struct cheats *cheats);
+void core_run_frame(void);
 void core_unload_content(void);
 const char **core_extensions(void);
 void core_unload(void);

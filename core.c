@@ -34,6 +34,7 @@ static char system_dir[MAX_PATH];
 static struct retro_disk_control_ext_callback disk_control_ext;
 
 static uint32_t buttons = 0;
+static int polled = 0;
 
 static int core_load_game_info(struct content *content, struct retro_game_info *game_info) {
 	struct retro_system_info info = {};
@@ -534,10 +535,14 @@ static void pa_input_poll(void) {
 	handle_emu_action(which);
 
 	buttons = actions[IN_BINDTYPE_PLAYER12];
+	polled = 1;
 }
 
 static int16_t pa_input_state(unsigned port, unsigned device, unsigned index, unsigned id) {
 	if (port == 0 && device == RETRO_DEVICE_JOYPAD && index == 0) {
+		if (!polled)
+			pa_input_poll();
+
 		if (id == RETRO_DEVICE_ID_JOYPAD_MASK)
 			return buttons;
 
@@ -694,6 +699,11 @@ void core_apply_cheats(struct cheats *cheats) {
 			current_core.retro_cheat_set(i, cheats->cheats[i].enabled, cheats->cheats[i].code);
 		}
 	}
+}
+
+void core_run_frame(void) {
+	polled = 0;
+	current_core.retro_run();
 }
 
 void core_unload_content(void) {

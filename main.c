@@ -698,7 +698,7 @@ int main(int argc, char **argv) {
 	do {
 		count_fps();
 		adjust_audio();
-		current_core.retro_run();
+		core_run_frame();
 		perform_emu_action();
 #ifdef FUNKEY_S
 		if (should_suspend) {
