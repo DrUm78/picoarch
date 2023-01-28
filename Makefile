@@ -7,7 +7,7 @@ SYSROOT   = $(shell $(CC) --print-sysroot)
 
 PROCS     = -j4
 
-OBJS      = libpicofe/input.o libpicofe/in_sdl.o libpicofe/linux/in_evdev.o libpicofe/linux/plat.o libpicofe/fonts.o libpicofe/readpng.o libpicofe/config_file.o cheat.o config.o content.o core.o menu.o main.o options.o overrides.o patch.o scale.o unzip.o util.o
+OBJS      = libpicofe/input.o libpicofe/in_sdl.o libpicofe/linux/in_evdev.o libpicofe/linux/plat.o libpicofe/fonts.o libpicofe/readpng.o libpicofe/config_file.o cheat.o config.o content.o core.o menu.o main.o options.o overrides.o patch.o scale.o unzip.o util.o video.o
 
 BIN       = picoarch
 
@@ -34,6 +34,9 @@ beetle-pce-fast_TYPES = pce,cue,ccd,chd,toc,m3u
 
 bluemsx_REPO = https://github.com/libretro/blueMSX-libretro
 bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
+
+dosbox-pure_REPO = https://github.com/schellingb/dosbox-pure
+dosbox-pure_CORE = dosbox_pure_libretro.so
 
 fake-08_REPO = https://github.com/jtothebell/fake-08
 fake-08_BUILD_PATH = fake-08/platform/libretro

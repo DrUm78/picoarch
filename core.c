@@ -15,6 +15,7 @@
 #include "overrides.h"
 #include "plat.h"
 #include "util.h"
+#include "video.h"
 
 struct core_cbs current_core;
 char core_path[MAX_PATH];
@@ -326,7 +327,7 @@ static void set_directories(const char *core_name) {
 		snprintf(system_dir, MAX_PATH, "%s/system", cwd);
 		mkdir(system_dir, 0755);
 	} else {
-		PA_FATAL("Can't find system directory");
+		PA_FATAL("Can't find system directory\n");
 	}
 #endif  /* MINUI */
 	PA_INFO("Config dir: %s\n", config_dir);
@@ -368,12 +369,15 @@ static bool pa_environment(unsigned cmd, void *data) {
 		break;
 	}
 	case RETRO_ENVIRONMENT_SET_PIXEL_FORMAT: { /* 10 */
-		const enum retro_pixel_format *format = (enum retro_pixel_format *)data;
+		const enum retro_pixel_format format = *(enum retro_pixel_format *)data;
 
-		if (*format != RETRO_PIXEL_FORMAT_RGB565) {
-			/* 565 is only supported format */
+		if (format == RETRO_PIXEL_FORMAT_RGB565 ||
+		    format == RETRO_PIXEL_FORMAT_XRGB8888) {
+			video_set_pixel_format(format);
+		} else {
 			return false;
 		}
+
 		break;
 	}
 	case RETRO_ENVIRONMENT_SET_DISK_CONTROL_INTERFACE: { /* 13 */
@@ -435,7 +439,7 @@ static bool pa_environment(unsigned cmd, void *data) {
 	case RETRO_ENVIRONMENT_SET_CORE_OPTIONS: { /* 53 */
 		options_free();
 		if (data) {
-			options_init(*(const struct retro_core_option_definition **)data);
+			options_init((const struct retro_core_option_definition *)data);
 			load_config();
 		}
 		break;
@@ -472,6 +476,14 @@ static bool pa_environment(unsigned cmd, void *data) {
 		}
 		break;
 	}
+	case RETRO_ENVIRONMENT_SET_MESSAGE_EXT: { /* 6 */
+		const struct retro_message_ext *message = (const struct retro_message_ext*)data;
+		if (message) {
+			pa_log(message->level, "%s\n", message->msg);
+		}
+
+		break;
+	}
 	case RETRO_ENVIRONMENT_SET_AUDIO_BUFFER_STATUS_CALLBACK: { /* 62 */
 		const struct retro_audio_buffer_status_callback *cb =
 			(const struct retro_audio_buffer_status_callback *)data;
@@ -504,7 +516,7 @@ static bool pa_environment(unsigned cmd, void *data) {
 static void pa_video_refresh(const void *data, unsigned width, unsigned height, size_t pitch) {
 	if (data && !should_quit) {
 		pa_track_render();
-		plat_video_process(data, width, height, pitch);
+		video_process(data, width, height, pitch);
 	}
 }
 
@@ -675,6 +687,8 @@ int core_load_content(struct content *content) {
 	sample_rate = av_info.timing.sample_rate;
 	frame_rate = av_info.timing.fps;
 	aspect_ratio = av_info.geometry.aspect_ratio;
+
+	video_set_geometry(&av_info.geometry);
 	plat_reinit();
 
 #ifdef MMENU
@@ -740,6 +754,7 @@ void core_close(void) {
 	extensions = NULL;
 
 	options_free();
+	video_deinit();
 
 	if (current_core.handle) {
 		dlclose(current_core.handle);
