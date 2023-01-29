@@ -62,6 +62,8 @@ me_bind_action me_ctrl_actions[] =
 	{ "R BUTTON ",  1 << RETRO_DEVICE_ID_JOYPAD_R },
 	{ "L2 BUTTON ", 1 << RETRO_DEVICE_ID_JOYPAD_L2 },
 	{ "R2 BUTTON ", 1 << RETRO_DEVICE_ID_JOYPAD_R2 },
+	{ "L3 BUTTON ", 1 << RETRO_DEVICE_ID_JOYPAD_L3 },
+	{ "R3 BUTTON ", 1 << RETRO_DEVICE_ID_JOYPAD_R3 },
 	{ NULL,       0 }
 };
 

@@ -33,12 +33,15 @@
 #include "fk_menu.h"
 #include "fk_instant_play.h"
 #include "core.h"
+#include "overrides.h"
 #include "util.h"
 
 #ifndef SHELL_CMD_POWERDOWN
 #define SHELL_CMD_POWERDOWN                 "powerdown"
 #define SHELL_CMD_POWERDOWN_HANDLE          "powerdown handle"
 #endif
+
+#define AUTOSAVE_SLOT 99
 
 static char *prog_name;
 int instant_play = 0;
@@ -125,7 +128,9 @@ void FK_LoadNewGame(const char *fname)
 
 void FK_Autosave(void)
 {
-    if (state_allowed()) {
+    const struct core_override *override = get_overrides();
+
+    if (state_allowed() && (!override || !(override->prevent_resume))) {
         int prev_state_slot = state_slot;
         state_slot = AUTOSAVE_SLOT;
         state_write();

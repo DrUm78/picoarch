@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index f0acd51..8ad5a68 100644
+index f0acd51..7b42e9b 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -104,6 +104,16 @@ else ifeq ($(platform),ctr)
@@ -10,7 +10,7 @@ index f0acd51..8ad5a68 100644
 +  OUTNAME := dosbox_pure_libretro.so
 +  CXX     := $(CROSS_COMPILE)g++
 +  LDFLAGS := -Wl,--gc-sections -fno-ident
-+  COMMONFLAGS += -pthread
++  COMMONFLAGS += -pthread -DCYCLE_LIMIT=8200
 +  CPUFLAGS += -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -march=armv7ve
 +  STRIPCMD := $(CROSS_COMPILE)strip --strip-all
 +  ifeq ($(DEBUG), 1)

@@ -23,10 +23,10 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
-CORES := $(CORES) fake-08 snes9x2005_plus snes9x2010
+CORES := $(CORES) dosbox-pure fake-08 snes9x2005_plus snes9x2010
 endif
 
-#CORES=tyrquake
+# CORES = dosbox-pure
 
 beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
 beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
@@ -37,6 +37,7 @@ bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
 
 dosbox-pure_REPO = https://github.com/schellingb/dosbox-pure
 dosbox-pure_CORE = dosbox_pure_libretro.so
+dosbox-pure_TYPES = zip,dosz,exe,com,bat,iso,cue,ins,img,ima,vhd,jrc,tc,m3u,m3u8,conf
 
 fake-08_REPO = https://github.com/jtothebell/fake-08
 fake-08_BUILD_PATH = fake-08/platform/libretro
@@ -168,6 +169,7 @@ clean-libpicofe:
 plat_trimui.o: plat_sdl.c
 plat_funkey.o: plat_sdl.c
 plat_linux.o: plat_sdl.c
+overrides.o: overrides.c overrides/*.h
 
 $(BIN): libpicofe/.patched $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(BIN)
@@ -394,6 +396,10 @@ bluemsx_NAME = blueMSX
 bluemsx_ROM_DIR = /mnt/MSX
 bluemsx_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/dingux-msx.png
 bluemsx_ICON = dingux-msx
+
+dosbox-pure_ROM_DIR = /mnt/DOS
+dosbox-pure_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/dosbox.png
+dosbox-pure_ICON = dosbox
 
 fake-08_NAME = fake-08
 fake-08_ROM_DIR = /mnt/PICO-8

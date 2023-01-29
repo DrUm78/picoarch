@@ -38,7 +38,6 @@ extern "C" {
 
 #include <signal.h>
 
-#define AUTOSAVE_SLOT 99
 extern int instant_play;
 
 extern void FK_InitInstantPlay(int argc, char **argv);
