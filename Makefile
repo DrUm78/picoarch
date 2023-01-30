@@ -403,6 +403,8 @@ dosbox-pure_ICON = dosbox
 
 fake-08_NAME = fake-08
 fake-08_ROM_DIR = /mnt/PICO-8
+fake-08_ICON_URL = https://raw.githubusercontent.com/jtothebell/fake-08/master/platform/vita/sce_sys/icon0.png
+fake-08_ICON = icon0
 
 fbalpha2012_NAME = fba2012
 fbalpha2012_ROM_DIR = /mnt/Arcade
@@ -499,7 +501,7 @@ picoarch-$(1).opk: $(BIN) $(1)_libretro.so
 	$$(file >$$($(1)_NAME).funkey-s.desktop,$$($(1)_DESKTOP))
 	mv $$($(1)_NAME).funkey-s.desktop .opkdata
 	cp $(BIN) $(1)_libretro.so .opkdata
-	$(if $($(1)_ICON_URL),cd .opkdata && curl -L $($(1)_ICON_URL) -O,)
+	$(if $($(1)_ICON_URL),cd .opkdata && curl -L $($(1)_ICON_URL) -O && mogrify -resize '32x32>' $($(1)_ICON).png,)
 	cd .opkdata && mksquashfs * ../picoarch-$(1).opk -all-root -no-xattrs -noappend -no-exports
 	rm -r .opkdata
 endef
