@@ -256,4 +256,5 @@ const struct core_override_startup_msg pcsx_rearmed_startup_msg = {
 	.actions = pcsx_rearmed_ctrl_actions,                  \
 	.action_size = array_size(pcsx_rearmed_ctrl_actions),  \
 	.options = pcsx_rearmed_core_option_overrides,         \
+	.defer_frames = 3,                                     \
 }

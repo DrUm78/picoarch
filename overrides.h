@@ -35,6 +35,7 @@ struct core_override {
 	me_bind_action* emu_actions;
 	const size_t emu_action_size;
 	const struct core_override_option* options;
+	int defer_frames;
 	int needs_reopen;
 	int prevent_resume;
 };

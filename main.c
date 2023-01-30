@@ -611,6 +611,8 @@ int state_resume(void) {
 
 int main(int argc, char **argv) {
 	char content_path[MAX_PATH];
+	const struct core_override *override;
+	int defer_frames = 0;
 
 	if (argc > 1) {
 		if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
@@ -688,6 +690,14 @@ int main(int argc, char **argv) {
 #endif
 
 	show_startup_message();
+
+	override = get_overrides();
+	defer_frames = CORE_OVERRIDE(override, defer_frames, 0);
+	if (defer_frames > 0) {
+		toggle_fast_forward(0);
+		while(defer_frames--) core_run_frame();
+		toggle_fast_forward(1);
+	}
 
 #ifdef FUNKEY_S
 	FK_InitMenu();

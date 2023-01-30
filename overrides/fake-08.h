@@ -16,4 +16,5 @@ me_bind_action fake08_ctrl_actions[] =
 	.core_name = "fake-08",                               \
 	.actions = fake08_ctrl_actions,                       \
 	.action_size = array_size(fake08_ctrl_actions),       \
+	.defer_frames = 3,                                    \
 }
