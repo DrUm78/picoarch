@@ -164,6 +164,10 @@ void FK_Resume(void)
 
 void FK_InitInstantPlay(int argc, char **argv)
 {
+    const struct core_override *override = get_overrides();
+    if (!state_allowed() || (override && override->prevent_resume))
+        plat_video_set_msg("WARN: No Instant Play support", 3, 4000);
+
     prog_name = argv[0];
     signal(SIGUSR1, handle_sigusr1);
 }
