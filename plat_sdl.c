@@ -179,6 +179,9 @@ finish:
 
 void plat_video_menu_enter(int is_rom_loaded)
 {
+	if (g_menuscreen_ptr)
+		return;
+
 	SDL_LockSurface(screen);
 	memcpy(g_menubg_src_ptr, screen->pixels, g_menubg_src_h * g_menubg_src_pp * sizeof(uint16_t));
 	SDL_UnlockSurface(screen);

@@ -34,6 +34,7 @@
 #include "fk_instant_play.h"
 #include "core.h"
 #include "overrides.h"
+#include "plat.h"
 #include "util.h"
 
 #ifndef SHELL_CMD_POWERDOWN
@@ -152,6 +153,7 @@ void FK_Resume(void)
             if (resume == RESUME_YES) {
                 resume_slot = AUTOSAVE_SLOT;
             }
+            plat_video_menu_leave();
         }
     }
 

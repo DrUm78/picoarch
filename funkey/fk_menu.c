@@ -972,6 +972,8 @@ int FK_RunMenu(SDL_Surface *screen)
 	read_aspect_ratio();
 #endif
 
+	plat_video_menu_enter(1);
+
 	/// ------ Backup currently displayed app screen -------
 	background_screen = SDL_CreateRGBSurface(SDL_SWSURFACE,
 			screen->w, screen->h, 32, 0, 0, 0, 0);
@@ -1479,7 +1481,8 @@ int FK_RunMenu(SDL_Surface *screen)
 		background_screen = NULL;
 	}
 	MENU_DEBUG_PRINTF("Leave Menu\n");
-	plat_video_menu_leave();
+	if (returnCode != MENU_RETURN_MENU)
+		plat_video_menu_leave();
 	return returnCode;
 }
 
