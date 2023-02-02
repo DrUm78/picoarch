@@ -23,7 +23,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
-CORES := $(CORES) dosbox-pure fake-08 snes9x2005_plus snes9x2010
+CORES := $(CORES) dosbox-pure fake-08 fbalpha2012 snes9x2005_plus snes9x2010
 endif
 
 # CORES = dosbox-pure
@@ -426,7 +426,7 @@ gambatte_ICON = gb
 
 gme_ROM_DIR = /mnt/Music
 gme_TYPES = ay,gbs,gym,hes,kss,nsf,nsfe,sap,spc,vgm,vgz,zip
-gme_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/gmenu2x/FunKey/data/skins/240x240/Default/icons/gmu.png
+gme_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/gmu.png
 gme_ICON = gmu
 
 gpsp_ROM_DIR = /mnt/Game Boy Advance
@@ -443,8 +443,8 @@ mame2003_plus_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/mast
 mame2003_plus_ICON = icon
 
 pcsx_rearmed_ROM_DIR = /mnt/PS1
-pcsx_rearmed_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PCSX-ReARMed/opk/ps1/ps1.png
-pcsx_rearmed_ICON = ps1
+pcsx_rearmed_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/pcsx4all.png
+pcsx_rearmed_ICON = pcsx4all
 
 picodrive_ROM_DIR = /mnt/Sega Genesis
 picodrive_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/picodrive/opk/megadrive/megadrive.png
