@@ -4,17 +4,19 @@ picoarch runs libretro cores (emulators) for various systems with low overhead a
 
 It supports: 
 
-- **Arcade** (mame2000)
+- **Arcade** (mame2000, fbalpha2012)
 - **Colecovision** (blueMSX, smsplus)
 - **Game Boy / Game Boy Color** (gambatte)
 - **Game Boy Advance** (gpsp)
 - **Game Gear** (picodrive, smsplus)
 - **Genesis** (picodrive)
+- **MS-DOS** (dosbox-pure)
 - **MSX** (fMSX, blueMSX)
 - **NES** (quicknes, fceumm)
 - **Sega Master System** (picodrive, smsplus)
-- **Super NES** (snes9x2002, snes9x2005, snes9x2005_plus)
+- **Super NES** (snes9x2002, snes9x2005, snes9x2005_plus, snes9x2010)
 - **PCE / TurboGrafx-16** (beetle-pce-fast)
+- **PICO-8** (fake-08)
 - **PlayStation** (pcsx_rearmed)
 - more to come
 
