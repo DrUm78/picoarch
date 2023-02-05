@@ -13,6 +13,7 @@
 #include "overrides/mame2000.h"
 #include "overrides/pcsx_rearmed.h"
 #include "overrides/picodrive.h"
+#include "overrides/pokemini.h"
 #include "overrides/prboom.h"
 #include "overrides/quicknes.h"
 #include "overrides/scummvm.h"
@@ -40,6 +41,7 @@ static const struct core_override overrides[] = {
 	mame2000_overrides,
 	pcsx_rearmed_overrides,
 	picodrive_overrides,
+	pokemini_overrides,
 	prboom_overrides,
 	quicknes_overrides,
 	scummvm_overrides,

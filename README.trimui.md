@@ -12,10 +12,11 @@ It supports:
 - **Genesis** (picodrive)
 - **MSX** (fMSX, blueMSX)
 - **NES** (quicknes, fceumm)
-- **Sega Master System** (picodrive, smsplus)
-- **Super NES** (snes9x2002, snes9x2005)
 - **PCE / TurboGrafx-16** (beetle-pce-fast)
 - **PlayStation** (pcsx_rearmed)
+- **Pokémon Mini** (pokemini)
+- **Sega Master System** (picodrive, smsplus)
+- **Super NES** (snes9x2002, snes9x2005)
 - more to come
 
 picoarch can also play game music (gme).

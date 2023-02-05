@@ -20,7 +20,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 # Unpolished or slow cores that build
 # EXTRA_CORES += fbalpha2012 mame2003_plus prboom scummvm tyrquake
 
-CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
+CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive pokemini quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
 CORES := $(CORES) dosbox-pure fake-08 fbalpha2012 snes9x2005_plus snes9x2010
@@ -74,6 +74,8 @@ pcsx_rearmed_TYPES = bin,cue,img,mdf,pbp,toc,cbn,m3u,chd
 
 picodrive_MAKEFILE = Makefile.libretro
 picodrive_TYPES = bin,gen,smd,md,32x,cue,iso,chd,sms,gg,m3u,68k,sgd
+
+pokemini_TYPES = min
 
 prboom_REPO = https://github.com/libretro/libretro-prboom
 prboom_TYPES = wad,iwad,pwad,lmp
@@ -259,6 +261,9 @@ mame2003_plus_PAK_NAME = Arcade (MAME 2003-plus)
 
 picodrive_ROM_DIR = MD
 picodrive_PAK_NAME = Genesis
+
+pokemini_ROM_DIR = POKEMINI
+pokemini_PAK_NAME = PokeMini
 
 pcsx_rearmed_ROM_DIR = PS
 pcsx_rearmed_PAK_NAME = PlayStation
@@ -449,6 +454,10 @@ pcsx_rearmed_ICON = pcsx4all
 picodrive_ROM_DIR = /mnt/Sega Genesis
 picodrive_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/picodrive/opk/megadrive/megadrive.png
 picodrive_ICON = megadrive
+
+pokemini_ROM_DIR = /mnt/PokeMini
+pokemini_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenunx/master/assets/miyoo/skins/PixUI/icons/pokemini.png
+pokemini_ICON = pokemini
 
 quicknes_ROM_DIR = /mnt/NES
 quicknes_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/FCEUX/opk/nes/nes.png
