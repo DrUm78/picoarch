@@ -133,26 +133,30 @@ bool state_exists(int slot) {
 
 int state_read(void) {
 	char filename[MAX_PATH];
+	struct stat stat;
+	size_t state_size;
 	FILE *state_file = NULL;
 	void *state = NULL;
 	int ret = -1;
-
-	size_t state_size = current_core.retro_serialize_size();
-	if (!state_size) {
-		return 0;
-	}
-
-	state = calloc(1, state_size);
-	if (!state) {
-		PA_ERROR("Couldn't allocate memory for state\n");
-		goto error;
-	}
 
 	state_file_name(filename, MAX_PATH, state_slot);
 
 	state_file = fopen(filename, "r");
 	if (!state_file) {
 		PA_ERROR("Error opening state file: %s\n", strerror(errno));
+		goto error;
+	}
+
+	if (fstat(fileno(state_file), &stat) == -1) {
+		PA_ERROR("Couldn't read state file size: %s\n", strerror(errno));
+		goto error;
+	}
+
+	state_size = stat.st_size;
+
+	state = calloc(1, state_size);
+	if (!state) {
+		PA_ERROR("Couldn't allocate memory for state\n");
 		goto error;
 	}
 
