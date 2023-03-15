@@ -475,6 +475,12 @@ static int menu_loop_core_options_page(int offset, int keys) {
 		menu_idx++;
 	}
 
+	for (; i < core_options.len; i++) {
+		struct core_option_entry *entry = &core_options.entries[i];
+		if (!entry->blocked && entry->visible)
+			break;
+	}
+
 	if (i < core_options.len) {
 		menu_entry *option;
 		option = &e_menu_core_options[menu_idx];
