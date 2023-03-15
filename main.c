@@ -214,10 +214,6 @@ void set_defaults(void)
 	scale_size = SCALE_SIZE_NONE;
 	scale_filter = SCALE_FILTER_NEAREST;
 
-#ifdef FUNKEY_S
-	enable_drc = 0;
-#endif
-
 	/* Sets better defaults for small screen */
 	if (SCREEN_WIDTH == 240) {
 		scale_size = SCALE_SIZE_CROP;
