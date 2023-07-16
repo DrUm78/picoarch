@@ -1,7 +1,10 @@
 *.o
 *.so
 *.opk
+*.zip
+compile_commands.json
 picoarch
+/.cache
 /pkg
 /profile
 /system

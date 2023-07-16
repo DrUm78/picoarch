@@ -1,10 +1,10 @@
 diff --git a/dosbox_pure_libretro.cpp b/dosbox_pure_libretro.cpp
-index 6a03631..dc4f70d 100644
+index af4c66f..bd59842 100644
 --- a/dosbox_pure_libretro.cpp
 +++ b/dosbox_pure_libretro.cpp
-@@ -451,15 +451,30 @@ void DBP_SetRealModeCycles()
- 		(year >  1993 ? 60000 : // Pentium 90 MHz
- 		Cycles1981to1993[year - 1981]))); // Matching speed for year
+@@ -544,15 +544,30 @@ void DBP_SetRealModeCycles()
+ 		(year >  1999 ? 500000 : // Pentium III, 600 MHz and later
+ 		Cycles1981to1999[year - 1981]))); // Matching speed for year
  
 +#ifdef CYCLE_LIMIT
 +	if (CPU_CycleMax > CYCLE_LIMIT)
@@ -32,4 +32,4 @@ index 6a03631..dc4f70d 100644
 +#endif
  }
  
- static void DBP_UnlockSpeed(bool unlock, int start_frame_skip = 0, bool skip_once = false)
+ static bool DBP_NeedFrameSkip(bool in_emulation)
