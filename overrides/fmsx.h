@@ -8,8 +8,8 @@ static const struct core_override_option fmsx_core_option_overrides[] = {
 	{
 		.key = "fmsx_mapper_type_mode",
 		.retro_var_value = "Mapper Type; "
-			"Guess Mapper Type A|"
-			"Guess Mapper Type B|"
+			"Guess Type A|"
+			"Guess Type B|"
 			"Generic 8kB|"
 			"Generic 16kB|"
 			"Konami5 8kB|"
@@ -24,12 +24,20 @@ static const struct core_override_option fmsx_core_option_overrides[] = {
 		.retro_var_value = "DiskROM calls; Disabled|Enabled"
 	},
 	{
+		.key = "fmsx_scci_megaram",
+		.retro_var_value = "Enable MegaRAM; Yes|No"
+	},
+	{
 		.key = "fmsx_autospace",
 		.retro_var_value = "Autofire SPACE; No|Yes"
 	},
 	{
 		.key = "fmsx_phantom_disk",
 		.retro_var_value = "Make empty disk; No|Yes"
+	},
+	{
+		.key = "fmsx_dos2",
+		.retro_var_value = "Load MSXDOS2.ROM; No|Yes"
 	},
 	{
 		.key = "fmsx_custom_keyboard_up",

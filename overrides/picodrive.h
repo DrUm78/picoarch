@@ -36,6 +36,7 @@ static const struct core_override_option picodrive_core_option_overrides[] = {
 	},
 	{
 		.key = "picodrive_lowpass_range",
+		.desc = "Low-Pass Filter %%",
 		.info = "Specify the cut-off frequency of the audio low pass filter. A higher value increases the perceived 'strength' of the filter.",
 	},
 	{

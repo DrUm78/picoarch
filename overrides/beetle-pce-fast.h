@@ -12,7 +12,7 @@ static const struct core_override_option beetle_pce_fast_core_option_overrides[]
 	},
 	{
 		.key = "pce_fast_frameskip_threshold",
-		.desc = "FS Threshold (%)",
+		.desc = "FS Threshold (%%)",
 		.info = "When 'Frameskip' is set to 'Threshold', sets how low the audio buffer can get before frames will be skipped.",
 	},
 	{
@@ -59,6 +59,14 @@ static const struct core_override_option beetle_pce_fast_core_option_overrides[]
 	{
 		.key = "pce_fast_cdbios",
 		.desc = "CD BIOS (Restart)",
+		.options = {
+			{ "Games Express", "Games Exp" },
+			{ "System Card 1", "SC 1" },
+			{ "System Card 2", "SC 2" },
+			{ "System Card 3", "SC 3" },
+			{ "System Card 2 US", "SC 2 US" },
+			{ "System Card 3 US", "SC 3 US" },
+		}
 	},
 	{
 		.key = "pce_fast_ocmultiplier",
@@ -68,6 +76,27 @@ static const struct core_override_option beetle_pce_fast_core_option_overrides[]
 	{
 		.key = "pce_fast_disable_softreset",
 		.desc = "Disable Soft Reset",
+	},
+	{
+		.key = "pce_fast_default_joypad_type_p1",
+		.desc = "Joypad Type",
+		.info = "Choose if joypad should be 2 or 6 buttons by default. Needs restart. If you want to switch while content is running, use the 'Mode Switch' button."
+	},
+	{
+		.key = "pce_fast_default_joypad_type_p2",
+		.blocked = true
+	},
+	{
+		.key = "pce_fast_default_joypad_type_p3",
+		.blocked = true
+	},
+	{
+		.key = "pce_fast_default_joypad_type_p4",
+		.blocked = true
+	},
+	{
+		.key = "pce_fast_default_joypad_type_p5",
+		.blocked = true
 	},
 	{
 		.key = "pce_fast_mouse_sensitivity",

@@ -6,12 +6,20 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 		.desc = "RAM Fill (Restart)",
 	},
 	{
-		.key = "fceumm_overscan_h",
-		.desc = "Crop Hrz. Overscan",
+		.key = "fceumm_overscan_h_left",
+		.desc = "Crop Overscan Left",
 	},
 	{
-		.key = "fceumm_overscan_v",
-		.desc = "Crop Vrt. Overscan",
+		.key = "fceumm_overscan_h_right",
+		.desc = "Crop Overscan Rgt.",
+	},
+	{
+		.key = "fceumm_overscan_v_top",
+		.desc = "Crop Overscan Top",
+	},
+	{
+		.key = "fceumm_overscan_v_bottom",
+		.desc = "Crop Overscan Bot.",
 	},
 	{
 		.key = "fceumm_up_down_allowed",
@@ -71,6 +79,14 @@ static const struct core_override_option fceumm_core_option_overrides[] = {
 	},
 	{
 		.key = "fceumm_zapper_tolerance",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_arkanoid_mode",
+		.blocked = true
+	},
+	{
+		.key = "fceumm_mouse_sensitivity",
 		.blocked = true
 	},
 	{ NULL }
