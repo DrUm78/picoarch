@@ -58,7 +58,6 @@ finish:
 static int content_load_zip(struct content *content) {
 	const char *ext = NULL;
 	int i = 0;
-	bool haszip = false;
 	int ret = -1;
 	FILE *f = NULL;
 	const char **extensions = core_extensions();
@@ -66,37 +65,35 @@ static int content_load_zip(struct content *content) {
 	if (extensions && has_suffix_i(content->path, ".zip")) {
 		while((ext = extensions[i++])) {
 			if (!strcmp(ext, "zip")) {
-				haszip = true;
-				break;
+				return 0;
 			}
 		}
 
-		if (!haszip) {
-			f = fopen(content->path, "r");
-			if (!f) {
-				goto finish;
-			}
+		f = fopen(content->path, "r");
+		if (!f) {
+			goto finish;
+		}
 
-			if (content->tmpfile)
-				remove(content->tmpfile);
+		if (content->tmpfile)
+			remove(content->tmpfile);
 
+		free(content->tmpfile);
+
+		content->tmpfile = calloc(MAX_PATH, sizeof(*content->tmpfile));
+		if (!content->tmpfile) {
+			PA_ERROR("Couldn't allocate memory for unzipped path\n");
+			goto finish;
+		}
+
+		if (unzip_tmp(f, extensions, content->tmpfile, MAX_PATH)) {
+			remove(content->tmpfile);
 			free(content->tmpfile);
-
-			content->tmpfile = calloc(MAX_PATH, sizeof(*content->tmpfile));
-			if (!content->tmpfile) {
-				PA_ERROR("Couldn't allocate memory for unzipped path\n");
-				goto finish;
-			}
-
-			if (unzip_tmp(f, extensions, content->tmpfile, MAX_PATH)) {
-				free(content->tmpfile);
-				content->tmpfile = NULL;
-				goto finish;
-			}
-
-			ret = 0;
+			content->tmpfile = NULL;
+			goto finish;
 		}
 	}
+
+	ret = 0;
 
 finish:
 	if (f)
@@ -304,7 +301,7 @@ void content_based_name(const struct content *content,
 		subdir = "";
 		strncpy(filename, path, sizeof(filename));
 	}
-	
+
 	filename[sizeof(filename) - 1] = 0;
 
 	dot = strrchr(filename, '.');
@@ -321,7 +318,11 @@ int content_load_game_info(struct content *content, struct retro_game_info *info
 	int ret = -1;
 	PA_INFO("Loading %s\n", content->path);
 
-	content_load_zip(content);
+	if (content_load_zip(content)) {
+		PA_ERROR("Error unzipping content file: %s\n", content->path);
+		goto finish;
+	}
+
 	path = content->tmpfile ? content->tmpfile : content->path;
 
 	if (needs_fullpath) {
