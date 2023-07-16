@@ -7,7 +7,7 @@ SYSROOT   = $(shell $(CC) --print-sysroot)
 
 PROCS     = -j4
 
-OBJS      = libpicofe/input.o libpicofe/in_sdl.o libpicofe/linux/in_evdev.o libpicofe/linux/plat.o libpicofe/fonts.o libpicofe/readpng.o libpicofe/config_file.o cheat.o config.o content.o core.o menu.o main.o options.o overrides.o patch.o scale.o unzip.o util.o video.o
+SOURCES   = libpicofe/input.c libpicofe/in_sdl.c libpicofe/linux/in_evdev.c libpicofe/linux/plat.c libpicofe/fonts.c libpicofe/readpng.c libpicofe/config_file.c cheat.c config.c content.c core.c menu.c main.c options.c overrides.c patch.c scale.c unzip.c util.c video.c
 
 BIN       = picoarch
 
@@ -105,17 +105,17 @@ snes9x2010_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 tyrquake_TYPES = pak
 
 ifeq ($(platform), trimui)
-	OBJS += plat_trimui.o
+	SOURCES += plat_trimui.c
 	CFLAGS += -mcpu=arm926ej-s -mtune=arm926ej-s -fno-PIC -DCONTENT_DIR='"/mnt/SDCARD/Roms"'
 	LDFLAGS += -fno-PIC
 else ifeq ($(platform), funkey-s)
-	OBJS += plat_funkey.o funkey/fk_menu.o funkey/fk_instant_play.o
+	SOURCES += plat_funkey.c funkey/fk_menu.c funkey/fk_instant_play.c
 	CFLAGS += -DCONTENT_DIR='"/mnt"' -DFUNKEY_S
 	LDFLAGS += -fPIC
 	LDFLAGS += -lSDL_image -lSDL_ttf # For fk_menu
 	core_platform = classic_armv7_a7
 else ifeq ($(platform), unix)
-	OBJS += plat_linux.o
+	SOURCES += plat_linux.c
 	LDFLAGS += -fPIE
 endif
 
@@ -171,10 +171,13 @@ reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(
 clean-libpicofe:
 	test ! -f libpicofe/.patched || (cd libpicofe && ($(foreach patch, $(call reverse,$(sort $(wildcard patches/libpicofe/*.patch))), patch -R --merge --no-backup-if-mismatch -p1 < ../$(patch) &&) rm .patched))
 
-plat_trimui.o: plat_sdl.c
-plat_funkey.o: plat_sdl.c
-plat_linux.o: plat_sdl.c
-overrides.o: overrides.c overrides/*.h
+CFLAGS += -MMD -MP
+DEPS=$(SOURCES:.c=.d)
+$(DEPS):
+
+include $(wildcard $(DEPS))
+
+OBJS = $(SOURCES:.c=.o)
 
 $(BIN): libpicofe/.patched $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(BIN)
@@ -210,7 +213,7 @@ cores: $(SOFILES)
 
 .PHONY: clean-picoarch
 clean-picoarch:
-	rm -f $(OBJS) $(BIN)
+	rm -f $(DEPS) $(OBJS) $(BIN)
 	rm -rf pkg
 	rm -f *.opk
 
