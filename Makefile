@@ -221,9 +221,9 @@ clean: clean-libpicofe clean-picoarch
 .PHONY: clean-all
 clean-all: $(foreach core,$(CORES),clean-$(core)) clean
 
-.PHONY: force-clean
-force-clean: clean
-	rm -rf $(CORES)
+.PHONY: distclean
+distclean: clean
+	rm -rf $(CORES) *.zip
 
 ifeq ($(platform), trimui)
 
