@@ -25,10 +25,10 @@ static int write_uncompressed(FILE *zip, FILE *dest, size_t size) {
 	while (size) {
 		size_t wsize = MIN(size, CHUNK);
 
-		if (size != fread(buf, 1, wsize, zip)) {
+		if (wsize != fread(buf, 1, wsize, zip)) {
 			return -1;
 		}
-		if (size != fwrite(buf, 1, wsize, zip)) {
+		if (wsize != fwrite(buf, 1, wsize, dest)) {
 			return -1;
 		}
 		size -= wsize;
