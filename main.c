@@ -673,6 +673,8 @@ int main(int argc, char **argv) {
 		quit(-1);
 	}
 
+	core_save_last_opened(content);
+
 	load_config_keys();
 
 #ifdef MMENU

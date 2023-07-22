@@ -704,6 +704,49 @@ finish:
 	return ret;
 }
 
+void core_load_last_opened(char *buf, size_t len) {
+	char filename[MAX_PATH];
+	FILE *file;
+	size_t count;
+
+	if (!len)
+		goto finish;
+
+	snprintf(filename, MAX_PATH, "%s%s", config_dir, "last_opened.txt");
+	file = fopen(filename, "r");
+
+	if (!file)
+		goto finish;
+
+	count = fread(buf, 1, len - 1, file);
+	buf[count] = '\0';
+
+finish:
+	if (file)
+		fclose(file);
+}
+
+void core_save_last_opened(struct content *content) {
+	char filename[MAX_PATH];
+	FILE *file;
+	size_t len = strlen(content->path);
+
+	if (!len)
+		goto finish;
+
+	snprintf(filename, MAX_PATH, "%s%s", config_dir, "last_opened.txt");
+	file = fopen(filename, "w");
+
+	if (!file)
+		goto finish;
+
+	fwrite(content->path, 1, len, file);
+
+finish:
+	if (file)
+		fclose(file);
+}
+
 void core_apply_cheats(struct cheats *cheats) {
 	if (!cheats)
 		return;
