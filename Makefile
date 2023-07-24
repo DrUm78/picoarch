@@ -11,6 +11,7 @@ SOURCES   = libpicofe/input.c libpicofe/in_sdl.c libpicofe/linux/in_evdev.c libp
 
 BIN       = picoarch
 
+unexport CFLAGS
 CFLAGS     += -Wall
 CFLAGS     += -fdata-sections -ffunction-sections -DPICO_HOME_DIR='"/.picoarch/"' -flto
 CFLAGS     += -I./ -I./libretro-common/include/ $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
@@ -38,6 +39,11 @@ bluemsx_TYPES = rom,ri,mx1,mx2,dsk,col,sg,sc,cas,m3u
 dosbox-pure_REPO = https://github.com/schellingb/dosbox-pure
 dosbox-pure_CORE = dosbox_pure_libretro.so
 dosbox-pure_TYPES = zip,dosz,exe,com,bat,iso,cue,ins,img,ima,vhd,jrc,tc,m3u,m3u8,conf
+dosbox-pure_FLAGS = STRIPCMD="$(CROSS_COMPILE)strip"
+ifeq ($(platform), funkey-s)
+dosbox-pure_FLAGS += CYCLE_LIMIT=8200
+endif
+
 
 fake-08_REPO = https://github.com/jtothebell/fake-08
 fake-08_BUILD_PATH = fake-08/platform/libretro
@@ -113,7 +119,7 @@ else ifeq ($(platform), funkey-s)
 	CFLAGS += -DCONTENT_DIR='"/mnt"' -DFUNKEY_S
 	LDFLAGS += -fPIC
 	LDFLAGS += -lSDL_image -lSDL_ttf # For fk_menu
-	core_platform = classic_armv7_a7
+	core_platform = unix-armv7-hardfloat-neon
 else ifeq ($(platform), unix)
 	SOURCES += plat_linux.c
 	LDFLAGS += -fPIE
@@ -188,7 +194,7 @@ $1_REPO ?= https://github.com/libretro/$(1)/
 
 $1_BUILD_PATH ?= $(1)
 
-$1_MAKE = make $(and $($1_MAKEFILE),-f $($1_MAKEFILE)) platform=$(core_platform) $(and $(DEBUG),DEBUG=$(DEBUG)) $(and $(PROFILE),PROFILE=$(PROFILE)) $($(1)_FLAGS)
+$1_MAKE = make $(and $($1_MAKEFILE),-f $($1_MAKEFILE)) platform=$(core_platform) $(and $(DEBUG),DEBUG=$(DEBUG)) $(and $(PROFILE),PROFILE=$(PROFILE)) CC=$(CC) CXX=$(CXX) $($(1)_FLAGS)
 
 $(1):
 	git clone $(if $($1_REVISION),,--depth 1) --recursive $$($(1)_REPO) $(1)
