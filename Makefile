@@ -21,7 +21,7 @@ LDFLAGS    = -lc -ldl -lgcc -lm -lSDL -lasound -lpng -lz -Wl,--gc-sections -flto
 # Unpolished or slow cores that build
 # EXTRA_CORES += mame2003_plus prboom scummvm tyrquake
 
-CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 pcsx_rearmed picodrive pokemini quicknes smsplus-gx snes9x2002 snes9x2005 $(EXTRA_CORES)
+CORES = beetle-pce-fast bluemsx fceumm fmsx gambatte gme gpsp mame2000 mednafen_ngp mednafen_wswan pcsx_rearmed picodrive pokemini quicknes smsplus-gx snes9x2002 snes9x2005 stella2014 $(EXTRA_CORES)
 
 ifneq ($(platform), trimui)
 CORES := $(CORES) dosbox-pure fake-08 fbalpha2012 snes9x2005_plus snes9x2010
@@ -75,6 +75,12 @@ mame2000_TYPES = zip
 mame2003_plus_REPO = https://github.com/libretro/mame2003-plus-libretro
 mame2003_plus_TYPES = zip
 
+mednafen_ngp_REPO = https://github.com/libretro/beetle-ngp-libretro
+mednafen_ngp_TYPES = ngp,ngc,ngpc,npc
+
+mednafen_wswan_REPO = https://github.com/libretro/beetle-wswan-libretro
+mednafen_wswan_TYPES = ws,wsc,pc2
+
 pcsx_rearmed_MAKEFILE = Makefile.libretro
 pcsx_rearmed_TYPES = bin,cue,img,mdf,pbp,toc,cbn,m3u,chd
 
@@ -107,6 +113,9 @@ snes9x2005_plus_FLAGS = USE_BLARGG_APU=1
 snes9x2005_plus_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
 
 snes9x2010_TYPES = smc,fig,sfc,gd3,gd7,dx2,bsx,swc,zip
+
+stella2014_REPO = https://github.com/libretro/stella2014-libretro
+stella2014_TYPES = a26,bin
 
 tyrquake_TYPES = pak
 
@@ -276,6 +285,14 @@ mame2003_plus_NAME = mame2003+
 mame2003_plus_ROM_DIR = ARCADE
 mame2003_plus_PAK_NAME = Arcade (MAME 2003-plus)
 
+mednafen_ngp_NAME = ngp
+mednafen_ngp_ROM_DIR = NGP
+mednafen_ngp_PAK_NAME = Neo Geo Pocket
+
+mednafen_wswan_NAME = wswan
+mednafen_wswan_ROM_DIR = WS
+mednafen_wswan_PAK_NAME = WonderSwan
+
 picodrive_ROM_DIR = MD
 picodrive_PAK_NAME = Genesis
 
@@ -301,6 +318,9 @@ snes9x2002_PAK_NAME = Super Nintendo
 
 snes9x2005_ROM_DIR = SFC
 snes9x2005_PAK_NAME = Super Nintendo (2005)
+
+stella2014_ROM_DIR = 2600
+stella2014_PAK_NAME = Atari 2600
 
 # -- gmenunx
 
@@ -464,6 +484,16 @@ mame2003_plus_ROM_DIR = /mnt/Arcade
 mame2003_plus_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenu2x/gmenunx/assets/miyoo/skins/PixUI/icons/mame.png
 mame2003_plus_ICON = icon
 
+mednafen_ngp_NAME = ngp
+mednafen_ngp_ROM_DIR = /mnt/Neo Geo Pocket
+mednafen_ngp_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/mednafen/opk/ngp/ngp.png
+mednafen_ngp_ICON = ngp
+
+mednafen_wswan_NAME = wswan
+mednafen_wswan_ROM_DIR = /mnt/WonderSwan
+mednafen_wswan_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/mednafen/opk/wonderswan/wonderswan.png
+mednafen_wswan_ICON = wonderswan
+
 pcsx_rearmed_ROM_DIR = /mnt/PS1
 pcsx_rearmed_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenu2x/gmenunx/assets/miyoo/skins/PixUI/icons/pcsx4all.png
 pcsx_rearmed_ICON = pcsx4all
@@ -501,6 +531,11 @@ snes9x2010_NAME = snes9x2010
 snes9x2010_ICON_URL = https://raw.githubusercontent.com/FunKey-Project/FunKey-OS/master/FunKey/package/PocketSNES/opk/snes/snes.png
 snes9x2010_ICON = snes
 snes9x2010_ROM_DIR = /mnt/SNES
+
+stella2014_NAME = stella2014
+stella2014_ICON_URL = https://raw.githubusercontent.com/MiyooCFW/gmenu2x/gmenunx/assets/miyoo/skins/PixUI/icons/stella-od.png
+stella2014_ICON = stella-od
+stella2014_ROM_DIR = /mnt/Atari 2600
 
 define CORE_opk =
 
