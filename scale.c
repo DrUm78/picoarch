@@ -528,7 +528,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.w_ratio_in = w / gcd_w;
 		blend_args.w_ratio_out = dst_w / gcd_w;
 
-		div_w = round(blend_args.w_ratio_out / 5.0);
+		div_w = (blend_args.w_ratio_out + 2) / 5; /* rounded integer divide by 5 */
 		blend_args.w_bp[0] = div_w;
 		blend_args.w_bp[1] = blend_args.w_ratio_out >> 1;
 
@@ -536,7 +536,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.h_ratio_in = h / gcd_h;
 		blend_args.h_ratio_out = dst_h / gcd_h;
 
-		div_h = round(blend_args.h_ratio_out / 5.0);
+		div_h = (blend_args.w_ratio_out + 2) / 5; /* rounded integer divide by 5 */
 		blend_args.h_bp[0] = div_h;
 		blend_args.h_bp[1] = blend_args.h_ratio_out >> 1;
 
