@@ -84,6 +84,7 @@ void FK_Suspend(void)
 
     FK_Autosave();
     sram_write();
+    rtc_write();
     save_config(CONFIG_TYPE_AUTO);
 
     PA_INFO("Suspending with %s %s %s %s %s\n", SHELL_CMD_INSTANT_PLAY, "save", prog_name, core_path, content->path);

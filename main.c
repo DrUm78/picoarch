@@ -389,6 +389,7 @@ static void perform_emu_action(void) {
 	case EACTION_MENU:
 		toggle_fast_forward(1); /* Force FF off */
 		sram_write();
+		rtc_write();
 		in_menu = true;
 #if defined(MMENU)
 		if (mmenu && content && strlen(content->path)) {

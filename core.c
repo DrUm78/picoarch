@@ -114,6 +114,61 @@ void sram_read(void) {
 	fclose(sram_file);
 }
 
+void rtc_write(void) {
+	char filename[MAX_PATH];
+	FILE *rtc_file = NULL;
+	void *rtc;
+
+	size_t rtc_size = current_core.retro_get_memory_size(RETRO_MEMORY_RTC);
+	if (!rtc_size) {
+		return;
+	}
+
+	content_based_name(content, filename, MAX_PATH, save_dir, NULL, ".rtc");
+
+	rtc_file = fopen(filename, "w");
+	if (!rtc_file) {
+		PA_ERROR("Error opening RTC file: %s\n", strerror(errno));
+		return;
+	}
+
+	rtc = current_core.retro_get_memory_data(RETRO_MEMORY_RTC);
+
+	if (!rtc || rtc_size != fwrite(rtc, 1, rtc_size, rtc_file)) {
+		PA_ERROR("Error writing RTC data to file\n");
+	}
+
+	fclose(rtc_file);
+
+	sync();
+}
+
+void rtc_read(void) {
+	char filename[MAX_PATH];
+	FILE *rtc_file = NULL;
+	void *rtc;
+
+	size_t rtc_size = current_core.retro_get_memory_size(RETRO_MEMORY_RTC);
+	if (!rtc_size) {
+		return;
+	}
+
+	content_based_name(content, filename, MAX_PATH, save_dir, NULL, ".rtc");
+
+	rtc_file = fopen(filename, "r");
+	if (!rtc_file) {
+		return;
+	}
+
+	rtc = current_core.retro_get_memory_data(RETRO_MEMORY_RTC);
+
+	if (!rtc || !fread(rtc, 1, rtc_size, rtc_file)) {
+		PA_ERROR("Error reading RTC data\n");
+	}
+
+	fclose(rtc_file);
+}
+
 bool state_allowed(void) {
 	return current_core.retro_serialize_size() > 0;
 }
@@ -675,6 +730,7 @@ int core_load_content(struct content *content) {
 	}
 
 	sram_read();
+	rtc_read();
 
 	if (!strcmp(core_name, "fmsx") && current_core.retro_set_controller_port_device) {
 		/* fMSX works best with joypad + keyboard */
@@ -769,6 +825,7 @@ void core_run_frame(void) {
 
 void core_unload_content(void) {
 	sram_write();
+	rtc_write();
 
 	cheats_free(cheats);
 	cheats = NULL;
