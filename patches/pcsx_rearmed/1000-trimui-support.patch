@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index ff8d1bb..8eef4a7 100644
+index 9b5d245..ae7745c 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -5,6 +5,8 @@ TARGET ?= pcsx
@@ -12,10 +12,10 @@ index ff8d1bb..8eef4a7 100644
  ifeq ($(platform), $(filter $(platform), vita ctr))
  CFLAGS += -O3 -DNDEBUG
 diff --git a/Makefile.libretro b/Makefile.libretro
-index 069290c..692d998 100644
+index d3a3530..7711b07 100644
 --- a/Makefile.libretro
 +++ b/Makefile.libretro
-@@ -394,6 +394,27 @@ else ifeq ($(platform), rpi4_64)
+@@ -458,6 +458,27 @@ else ifeq ($(platform), rpi4_64)
          fpic := -fPIC
          CFLAGS += -march=armv8-a+crc+simd -mtune=cortex-a72 -ftree-vectorize
  
@@ -43,7 +43,7 @@ index 069290c..692d998 100644
  # Classic Platforms ####################
  # Platform affix = classic_<ISA>_<µARCH>
  # Help at https://modmyclassic.com/comp
-@@ -519,6 +540,13 @@ CFLAGS += $(fpic)
+@@ -590,6 +611,13 @@ CFLAGS += $(fpic)
  MAIN_LDFLAGS += -shared
  MAIN_LDLIBS += $(LIBPTHREAD) $(LIBM) $(LIBDL) $(LIBZ)
  
@@ -58,10 +58,10 @@ index 069290c..692d998 100644
  ifeq ($(shell $(CC) -E -dD $(CFLAGS) include/arm_features.h | grep __SIZEOF_LONG__ | awk '{print $$3}'),4)
  CFLAGS += -D_FILE_OFFSET_BITS=64
 diff --git a/frontend/libretro.c b/frontend/libretro.c
-index 938b8e5..dcc16ef 100644
+index 1808c5e..35ce1d1 100644
 --- a/frontend/libretro.c
 +++ b/frontend/libretro.c
-@@ -3057,7 +3057,7 @@ void retro_init(void)
+@@ -3748,7 +3748,7 @@ void retro_init(void)
      * we have to do this because cache misses and some IO penalties
      * are not emulated. Warning: changing this may break compatibility. */
     Config.cycle_multiplier = CYCLE_MULT_DEFAULT;
@@ -71,19 +71,19 @@ index 938b8e5..dcc16ef 100644
  #endif
     pl_rearmed_cbs.gpu_peops.iUseDither = 1;
 diff --git a/frontend/libretro_core_options.h b/frontend/libretro_core_options.h
-index 4165237..c34008a 100644
+index 7c33b08..c522995 100644
 --- a/frontend/libretro_core_options.h
 +++ b/frontend/libretro_core_options.h
-@@ -203,7 +203,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
-       "PSX CPU Clock Speed",
+@@ -222,7 +222,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+       "PSX CPU Clock Speed (%)",
        NULL,
-       "Overclock or under-clock the PSX CPU. Try adjusting this if the game is too slow, too fast or hangs."
+       "Overclock or under-clock the PSX CPU. The value has to be lower than 100 because of some slowdowns (cache misses, hw access penalties, etc.) that are not emulated. Try adjusting this if the game is too slow, too fast or hangs."
 -#if defined(HAVE_PRE_ARMV7) && !defined(_3DS)
 +#if defined(HAVE_PRE_ARMV7) && !defined(_3DS) && !defined(_TRIMUI)
        " Default is 50."
  #else
        " Default is 57."
-@@ -285,7 +285,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+@@ -304,7 +304,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
           { "100", NULL },
           { NULL, NULL },
        },
@@ -92,7 +92,7 @@ index 4165237..c34008a 100644
        "50",
  #else
        "57",
-@@ -303,7 +303,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
+@@ -322,7 +322,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
           { "enabled",  NULL },
           { NULL, NULL },
        },
@@ -102,10 +102,10 @@ index 4165237..c34008a 100644
  #else
        "enabled",
 diff --git a/frontend/main.c b/frontend/main.c
-index cf015a4..beaee12 100644
+index 65114e3..2ad3c69 100644
 --- a/frontend/main.c
 +++ b/frontend/main.c
-@@ -165,7 +165,7 @@ void emu_set_default_config(void)
+@@ -164,7 +164,7 @@ void emu_set_default_config(void)
  	spu_config.iTempo = 0;
  	// may cause issues, no effect if only 1 core is detected
  	spu_config.iUseThread = 0;
