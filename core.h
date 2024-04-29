@@ -48,6 +48,9 @@ void save_relative_path(char *buf, size_t len, const char *basename);
 void sram_read(void);
 void sram_write(void);
 
+void rtc_read(void);
+void rtc_write(void);
+
 bool state_allowed(void);
 void state_file_name(char *name, size_t size, int slot);
 bool state_exists(int slot);
@@ -64,6 +67,8 @@ void core_extract_name(const char* core_file, char *buf, size_t len);
 int core_open(const char *corefile);
 void core_load(void);
 int core_load_content(struct content *content);
+void core_load_last_opened(char *buf, size_t len);
+void core_save_last_opened(struct content *content);
 void core_apply_cheats(struct cheats *cheats);
 void core_run_frame(void);
 void core_unload_content(void);

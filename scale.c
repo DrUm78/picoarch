@@ -186,7 +186,19 @@ static void scale_blend(unsigned w, unsigned h, size_t pitch, const void *src, v
 			if (!lines)
 				pnext -= (pitch / sizeof(uint16_t));
 
-			if (dy > rat_dst_h - bh[0]) {
+			if (dy <= bh[0] && dy + rat_h > (rat_dst_h + rat_dst_h - bh[0])) {
+				/* Will miss next line, blend in instead */
+				const uint32_t *src32 = (const uint32_t *)src;
+				const uint32_t *pnext32 = (const uint32_t *)pnext;
+				uint32_t *pblend32 = (uint32_t *)pblend;
+				int count = w / 2;
+
+				while(count--) {
+					*pblend32++ = AVERAGE32(*src32, *pnext32);
+					src32++;
+					pnext32++;
+				}
+			} else if (dy > rat_dst_h - bh[0]) {
 				pblend = pnext;
 			} else if (dy <= bh[0]) {
 				/* Drops const, won't get touched later though */
@@ -227,15 +239,17 @@ static void scale_blend(unsigned w, unsigned h, size_t pitch, const void *src, v
 				while (dx < rat_dst_w) {
 					if (a == b) {
 						out = a;
+					} else if (dx <= bw[0] && dx + rat_w > (rat_dst_w + rat_dst_w - bw[0])) {
+						out = AVERAGE16_NOCHK(a, b); // will miss next pixel, blend in instead
 					} else if (dx > rat_dst_w - bw[0]) { // top quintile, bbbb
 						out = b;
 					} else if (dx <= bw[0]) { // last quintile, aaaa
 						out = a;
 					} else {
 						if (dx > rat_dst_w - bw[1]) { // 2nd quintile, abbb
-							a = AVERAGE16_NOCHK(a,b);
+							a = AVERAGE16_NOCHK(a, b);
 						} else if (dx <= bw[1]) { // 4th quintile, aaab
-							b = AVERAGE16_NOCHK(a,b);
+							b = AVERAGE16_NOCHK(a, b);
 						}
 
 						out = AVERAGE16_NOCHK(a, b); // also 3rd quintile, aabb
@@ -528,7 +542,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.w_ratio_in = w / gcd_w;
 		blend_args.w_ratio_out = dst_w / gcd_w;
 
-		div_w = round(blend_args.w_ratio_out / 5.0);
+		div_w = (blend_args.w_ratio_out + 2) / 5; /* rounded integer divide by 5 */
 		blend_args.w_bp[0] = div_w;
 		blend_args.w_bp[1] = blend_args.w_ratio_out >> 1;
 
@@ -536,7 +550,7 @@ static void scale_select_scaler(unsigned w, unsigned h, size_t pitch) {
 		blend_args.h_ratio_in = h / gcd_h;
 		blend_args.h_ratio_out = dst_h / gcd_h;
 
-		div_h = round(blend_args.h_ratio_out / 5.0);
+		div_h = (blend_args.h_ratio_out + 2) / 5; /* rounded integer divide by 5 */
 		blend_args.h_bp[0] = div_h;
 		blend_args.h_bp[1] = blend_args.h_ratio_out >> 1;
 
