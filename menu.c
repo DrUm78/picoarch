@@ -250,16 +250,24 @@ const char *select_content(void) {
 
 	if (content && strlen(content->path)) {
 		strncpy(content_path, content->path, sizeof(content_path) - 1);
-	} else if (getenv("CONTENT_DIR")) {
-		strncpy(content_path, getenv("CONTENT_DIR"), sizeof(content_path) - 1);
-#ifdef CONTENT_DIR
 	} else {
-		strncpy(content_path, CONTENT_DIR, sizeof(content_path) - 1);
-#else
-	} else if (getenv("HOME")) {
-		strncpy(content_path, getenv("HOME"), sizeof(content_path) - 1);
-#endif
+		core_load_last_opened(content_path, sizeof(content_path));
 	}
+
+	if (!content_path[0]) {
+		if (getenv("CONTENT_DIR")) {
+			strncpy(content_path, getenv("CONTENT_DIR"), sizeof(content_path) - 1);
+#ifdef CONTENT_DIR
+		} else {
+			strncpy(content_path, CONTENT_DIR, sizeof(content_path) - 1);
+#else
+		} else if (getenv("HOME")) {
+			strncpy(content_path, getenv("HOME"), sizeof(content_path) - 1);
+#endif
+		}
+	}
+
+	content_path[sizeof(content_path) - 1] = '\0';
 
 	if (extensions) {
 		for (size = 0; extensions[size]; size++)

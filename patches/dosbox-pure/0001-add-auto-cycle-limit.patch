@@ -1,5 +1,20 @@
+diff --git a/Makefile b/Makefile
+index 3e7941c..8c54b71 100644
+--- a/Makefile
++++ b/Makefile
+@@ -181,6 +181,10 @@ else
+   endif
+ endif
+ 
++ifneq (,$(CYCLE_LIMIT))
++	COMMONFLAGS += -DCYCLE_LIMIT=$(CYCLE_LIMIT)
++endif
++
+ ifeq ($(BUILD),DEBUG)
+   BUILDDIR := debug
+   CFLAGS   := -DDEBUG -D_DEBUG -g -O0
 diff --git a/dosbox_pure_libretro.cpp b/dosbox_pure_libretro.cpp
-index af4c66f..bd59842 100644
+index 4f4ca7e..40ddef3 100644
 --- a/dosbox_pure_libretro.cpp
 +++ b/dosbox_pure_libretro.cpp
 @@ -544,15 +544,30 @@ void DBP_SetRealModeCycles()

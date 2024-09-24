@@ -11,6 +11,8 @@
 #include "overrides/gme.h"
 #include "overrides/gpsp.h"
 #include "overrides/mame2000.h"
+#include "overrides/mednafen_ngp.h"
+#include "overrides/mednafen_wswan.h"
 #include "overrides/pcsx_rearmed.h"
 #include "overrides/picodrive.h"
 #include "overrides/pokemini.h"
@@ -22,6 +24,7 @@
 #include "overrides/snes9x2005.h"
 #include "overrides/snes9x2005_plus.h"
 #include "overrides/snes9x2010.h"
+#include "overrides/stella2014.h"
 #include "overrides/tyrquake.h"
 #include "overrides/vitaquake2.h"
 #include "util.h"
@@ -39,6 +42,8 @@ static const struct core_override overrides[] = {
 	gme_overrides,
 	gpsp_overrides,
 	mame2000_overrides,
+	mednafen_ngp_overrides,
+	mednafen_wswan_overrides,
 	pcsx_rearmed_overrides,
 	picodrive_overrides,
 	pokemini_overrides,
@@ -50,6 +55,7 @@ static const struct core_override overrides[] = {
 	snes9x2005_overrides,
 	snes9x2005_plus_overrides,
 	snes9x2010_overrides,
+	stella2014_overrides,
 	tyrquake_overrides,
 	vitaquake2_overrides,
 };

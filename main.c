@@ -389,6 +389,7 @@ static void perform_emu_action(void) {
 	case EACTION_MENU:
 		toggle_fast_forward(1); /* Force FF off */
 		sram_write();
+		rtc_write();
 		in_menu = true;
 #if defined(MMENU)
 		if (mmenu && content && strlen(content->path)) {
@@ -672,6 +673,8 @@ int main(int argc, char **argv) {
 	if (core_load_content(content)) {
 		quit(-1);
 	}
+
+	core_save_last_opened(content);
 
 	load_config_keys();
 

@@ -114,6 +114,61 @@ void sram_read(void) {
 	fclose(sram_file);
 }
 
+void rtc_write(void) {
+	char filename[MAX_PATH];
+	FILE *rtc_file = NULL;
+	void *rtc;
+
+	size_t rtc_size = current_core.retro_get_memory_size(RETRO_MEMORY_RTC);
+	if (!rtc_size) {
+		return;
+	}
+
+	content_based_name(content, filename, MAX_PATH, save_dir, NULL, ".rtc");
+
+	rtc_file = fopen(filename, "w");
+	if (!rtc_file) {
+		PA_ERROR("Error opening RTC file: %s\n", strerror(errno));
+		return;
+	}
+
+	rtc = current_core.retro_get_memory_data(RETRO_MEMORY_RTC);
+
+	if (!rtc || rtc_size != fwrite(rtc, 1, rtc_size, rtc_file)) {
+		PA_ERROR("Error writing RTC data to file\n");
+	}
+
+	fclose(rtc_file);
+
+	sync();
+}
+
+void rtc_read(void) {
+	char filename[MAX_PATH];
+	FILE *rtc_file = NULL;
+	void *rtc;
+
+	size_t rtc_size = current_core.retro_get_memory_size(RETRO_MEMORY_RTC);
+	if (!rtc_size) {
+		return;
+	}
+
+	content_based_name(content, filename, MAX_PATH, save_dir, NULL, ".rtc");
+
+	rtc_file = fopen(filename, "r");
+	if (!rtc_file) {
+		return;
+	}
+
+	rtc = current_core.retro_get_memory_data(RETRO_MEMORY_RTC);
+
+	if (!rtc || !fread(rtc, 1, rtc_size, rtc_file)) {
+		PA_ERROR("Error reading RTC data\n");
+	}
+
+	fclose(rtc_file);
+}
+
 bool state_allowed(void) {
 	return current_core.retro_serialize_size() > 0;
 }
@@ -675,6 +730,7 @@ int core_load_content(struct content *content) {
 	}
 
 	sram_read();
+	rtc_read();
 
 	if (!strcmp(core_name, "fmsx") && current_core.retro_set_controller_port_device) {
 		/* fMSX works best with joypad + keyboard */
@@ -704,6 +760,49 @@ finish:
 	return ret;
 }
 
+void core_load_last_opened(char *buf, size_t len) {
+	char filename[MAX_PATH];
+	FILE *file;
+	size_t count;
+
+	if (!len)
+		goto finish;
+
+	snprintf(filename, MAX_PATH, "%s%s", config_dir, "last_opened.txt");
+	file = fopen(filename, "r");
+
+	if (!file)
+		goto finish;
+
+	count = fread(buf, 1, len - 1, file);
+	buf[count] = '\0';
+
+finish:
+	if (file)
+		fclose(file);
+}
+
+void core_save_last_opened(struct content *content) {
+	char filename[MAX_PATH];
+	FILE *file;
+	size_t len = strlen(content->path);
+
+	if (!len)
+		goto finish;
+
+	snprintf(filename, MAX_PATH, "%s%s", config_dir, "last_opened.txt");
+	file = fopen(filename, "w");
+
+	if (!file)
+		goto finish;
+
+	fwrite(content->path, 1, len, file);
+
+finish:
+	if (file)
+		fclose(file);
+}
+
 void core_apply_cheats(struct cheats *cheats) {
 	if (!cheats)
 		return;
@@ -726,6 +825,7 @@ void core_run_frame(void) {
 
 void core_unload_content(void) {
 	sram_write();
+	rtc_write();
 
 	cheats_free(cheats);
 	cheats = NULL;
