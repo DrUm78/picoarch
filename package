@@ -6,6 +6,7 @@ git submodule update --init
 make distclean
 make picoarch platform=funkey-s
 cp README.funkey-s.md opk/
+cp picoarch opk/
 
 rm -f *.opk
 mksquashfs opk/ picoarch_funkey-s.opk -all-root -noappend -no-exports -no-xattrs
