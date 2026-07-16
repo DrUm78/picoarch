@@ -656,8 +656,10 @@ int state_resume(void) {
 	int ret = 0;
 
 	if (resume_slot != -1) {
+		int prev_state_slot = state_slot;
 		state_slot = resume_slot;
 		ret = state_read();
+		state_slot = prev_state_slot;
 		resume_slot = -1;
 	}
 	return ret;
